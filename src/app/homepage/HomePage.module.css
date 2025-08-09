@@ -1,0 +1,125 @@
+.container {
+    font-family: sans-serif;
+    background: #F8F3ED;
+    color: #593825;
+    align-items: "center";
+    flex-direction: column;
+    width: 95%;
+    height: 90%;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: linear-gradient(to bottom, #DDDAD5, #F8F3ED);
+  }
+  
+  .left,
+  .right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  
+  .center {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+  }
+  
+  .center a {
+    text-decoration: none;
+    color: #4b2c20;
+    font-weight: bold;
+    font-size: 25px;
+  }
+  
+  .center a:hover {
+    color: #9b5e38;
+  }
+  
+  .logo {
+    width: 224.22px;
+    height: 119px;
+    fill: #4b2c20;
+  }
+  
+  .nav a {
+    justify-items: center;
+    margin-left: 30px;
+    text-decoration: none;
+    color: #4b2c20;
+    font-weight: bold;
+    font-size: 25;
+  }
+  
+  .nav a:hover {
+    color: #9b5e38;
+  }
+  
+  .main {
+    text-align: center;
+    padding: 50px 30px;
+  }
+  
+  .main h1 {
+    font-size: 50px;
+    font-weight: "extrabold";
+    margin-bottom: 20px;
+  }
+  
+  .main p {
+    font-size: 28px;
+    font-weight: "bold";
+    color: #8C6B4D;
+    margin-bottom: 30px;
+  }
+  
+  .button {
+    background: #4b2c20;
+    color: white;
+    padding: 12px 24px;
+    font-weight: bold;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .button:hover {
+    background: #633a2b;
+  }
+  
+  .imageGallery {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  
+  .imageGallery img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 30% 0 30% 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .background {
+    background-image: url('/fondo.svg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100vh;
+  
+    display: flex; /* necesario para centrar con flex */
+    justify-content: center; /* centra horizontalmente */
+    align-items: center;     /* centra verticalmente */
+  
+    flex-direction: column;
+  }
+  
+  
