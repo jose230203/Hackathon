@@ -5,16 +5,17 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, run the development server:
 
 ```bash
+
+#Run Frontend
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# run backend
+npx ts-node index.ts
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:5000/api-docs/](http://localhost:5000/api-docs/) with your browser to see the result.
+
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
