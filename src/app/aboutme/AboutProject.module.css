@@ -7,8 +7,7 @@
   margin: 0 auto;
   padding: 2rem 0;
 
-  /* Centrar el contenido vertical y horizontal */
-  flex-grow: 1;              /* toma todo el espacio disponible debajo del header */
+  flex-grow: 1;             
   display: flex;
   justify-content: center;
   align-items: center;

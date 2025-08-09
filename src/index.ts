@@ -1,7 +1,7 @@
 
 import express from 'express';
 import cors from 'cors';
-import { setupSwagger } from './swagger.setup'; // o .ts si usas TypeScript
+import { setupSwagger } from './swagger.setup'; 
 import routeProduct from './interfaces/routes/product.routes';
 import routeTable from './interfaces/routes/table.routes';
 import routeOrder from './interfaces/routes/order.routes';
@@ -23,5 +23,6 @@ server.use(baseUrl, routeRating);
 setupSwagger(server);
 
 server.listen(5000, () => {
+  
   console.log('Servidor backend activo en http://localhost:5000/api-docs');
 });

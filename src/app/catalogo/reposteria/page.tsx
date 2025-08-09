@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import styles from "../bebidas/BeverageCatalog.module.css"; // Reutilizamos los estilos de bebidas
+import styles from "../bebidas/BeverageCatalog.module.css"; 
 import axios from "axios";
-import { useCart } from "@/app/context/CartContext"; // Ajusta la ruta según tu estructura
+import { useCart } from "@/app/context/CartContext"; 
 
 interface Product {
   id: number;

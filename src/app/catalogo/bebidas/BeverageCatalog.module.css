@@ -75,11 +75,11 @@
 }
 
 .card img {
-  width: 100%;         /* que ocupe todo el ancho de la card */
-  height: 160px;       /* altura fija, ajusta según te convenga */
+  width: 100%;         
+  height: 160px;       
   border-radius: 0.5rem;
-  object-fit: cover;   /* recorta la imagen para que no se deforme y rellene el contenedor */
-  display: block;      /* elimina espacios debajo de la imagen */
+  object-fit: cover;   
+  display: block;      
 }
 
 .info {
@@ -128,9 +128,9 @@
     width: 100%;
     height: 100vh;
   
-    display: flex; /* necesario para centrar con flex */
-    justify-content: center; /* centra horizontalmente */
-    align-items: center;     /* centra verticalmente */
+    display: flex; 
+    justify-content: center; 
+    align-items: center;     
   
     flex-direction: column;
   }

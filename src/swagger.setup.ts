@@ -1,20 +1,31 @@
+import path from 'path';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { Express } from 'express';
-const options = {
+
+const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API de Café',
+      title: 'API hackathon',
       version: '0.0.1',
-      description: 'Documentación de la API del sistema de gestión de café',
+      description: 'Documentación de la API hackathon',
     },
+    servers: [
+      {
+        url: 'http://localhost:5000/api/v1',
+      },
+    ],
   },
-  apis: ['./src/interfaces/routes/*.ts'], // Asegúrate de apuntar aquí correctamente
+  apis: [
+    process.env.NODE_ENV === 'development'
+      ? path.join(__dirname, './interfaces/routes/*.js')
+      : path.join(__dirname, '../src/interfaces/routes/*.ts'),
+  ],
 };
 
-const swaggerSpec = swaggerJSDoc(options);
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-export function setupSwagger(app: Express) {
+
+export function setupSwagger(app) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }

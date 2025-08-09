@@ -22,7 +22,7 @@ const ABOUTME = () => {
     <Link href="/aboutme/">Sobre nosotros</Link>
   </nav>
 
-  <div className={styles.right}></div> {/* espacio para balancear visualmente */}
+  <div className={styles.right}></div> {}
 </header>
 
 <div className={styles.container}>
