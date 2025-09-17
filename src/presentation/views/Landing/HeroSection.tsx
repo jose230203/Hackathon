@@ -1,28 +1,37 @@
 import Button from "../../components/Button";
 import { Rocket } from "lucide-react"; 
+import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="flex flex-col md:flex-row items-center justify-between py-20">
-      <div className="space-y-6">
-        <h1 className="text-5xl font-bold text-white leading-tight">
-          Explora Galaxias Virtuales. <br />
-          Protege Sistemas. <br />
-          Aprende Hackeando.
+    <section className="flex flex-col md:flex-row items-center justify-center py-20 px-6">
+      {/* Texto */}
+      <div className="space-y-6 max-w-lg">
+        <h1 className="font-['suez-one'] text-5xl font-bold text-white leading-tight">
+          Hackea. Aprende. <br />
+          Domina.
         </h1>
 
-        <p className="text-gray-300 max-w-xl">
+        <p className="font-['orbitron'] text-lg text-gray-300">
           Sumérgete en el universo del hacking ético. Resuelve retos CTF,
           practica en laboratorios virtuales y domina la ciberseguridad mientras
           exploras galaxias digitales llenas de desafíos.
         </p>
 
-        <div className="flex gap-4">
-          <Button variant="primary">
-            Empieza ya <Rocket size={16} />
-          </Button>
-          <Button variant="secondary">Leer más</Button>
-        </div>
+        <Button variant="primary">
+          empieza ya 🚀
+        </Button>
+      </div>
+
+      {/* Imagen */}
+      <div className="relative max-w-md  mb-5 ml-30">
+        <Image
+          src="/Terminal.png"
+          alt="Terminal mostrando comandos de hacking"
+          width={500}
+          height={300}
+          className="object-contain rounded-lg shadow-lg border-4 border-purple-900 shadow-purple-500/30"
+        />
       </div>
     </section>
   );
