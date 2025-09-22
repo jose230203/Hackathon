@@ -41,10 +41,10 @@ export default function LoginForm() {
       </Button>
 
       <p className="text-center text-sm text-gray-300 mt-4">
-        Nuevo en la plataforma? <Link href="/register" className="text-[#6B64F2] hover:underline">Regístrate</Link>
+        Nuevo en la plataforma? <Link href="/Onboarding/register" className="text-[#6B64F2] hover:underline">Regístrate</Link>
       </p>
       <p className="text-center text-sm text-gray-300 mt-2">
-        Olvidaste tu contraseña? <Link href="#" className="text-[#6B64F2] hover:underline">Recuperar</Link>
+        Olvidaste tu contraseña? <Link href="/Onboarding/Forgot" className="text-[#6B64F2] hover:underline">Recuperar</Link>
       </p>
     </form>
   );

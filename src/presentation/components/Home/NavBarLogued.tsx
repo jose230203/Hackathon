@@ -7,15 +7,15 @@ interface NavBarLoguedProps {
 
 export default function NavBarLogued({ usuario }: NavBarLoguedProps) {
   return (
-    <header className="flex justify-between items-center pb-4 border-b border-[#54188C] font-['Suez-One'] font-black">
+    <header className="flex justify-between items-center pb-4 border-b border-[#54188C] font-['Suez-One'] font-black text-2xl">
       {/* Logo de la página */}
       <div className="flex items-center">
         <img
           src="/Logo.svg" 
           alt="Logo de la página"
-          width={50}
+          width={60}
           height={50}
-          className="mr-4"
+          className="mx-4"
         />
       </div>
 

@@ -75,7 +75,7 @@ export default function RegisterForm() {
       </Button>
 
       <p className="text-center text-sm text-gray-300 mt-4">
-        ¿Ya tienes una cuenta? <Link href="/login" className="text-[#6B64F2] hover:underline">Inicia Sesión</Link>
+        ¿Ya tienes una cuenta? <Link href="/Onboarding/login" className="text-[#6B64F2] hover:underline">Inicia Sesión</Link>
       </p>
     </form>
   );
