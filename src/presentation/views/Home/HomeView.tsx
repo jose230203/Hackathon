@@ -4,7 +4,7 @@ import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
 
 const usuario: Usuario = {
   id: "123",
-  nombre: "John Doe",
+  nombre: "Rene Comepitos",
   correo: "john.doe@example.com",
   avatar: "/itachi.png",
   contrasena: "password123",
