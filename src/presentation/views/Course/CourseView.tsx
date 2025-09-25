@@ -4,20 +4,10 @@ import ProgressSection from "@/presentation/components/Home/ProgressSection";
 import ChatbotModal from "@/presentation/components/Home/ChatbotModal";
 
 export default function CourseView() {
-  const usuario = {
-    id: "123",
-    nombre: "Carlos Espinoza",
-    correo: "carlos.espinoza@example.com",
-    avatar: "/itachi.png",
-    contrasena: "password123",
-    estado: true,
-    fechaRegistro: new Date(),
-  };
-
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white relative">
       {/* Navbar */}
-      <NavBarLogued usuario={usuario} />
+  <NavBarLogued />
 
       <div className="grid grid-cols-12 gap-4 px-8 py-4">
         <ChatbotModal isOpen={true} />

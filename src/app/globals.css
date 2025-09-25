@@ -48,3 +48,26 @@ section {
   text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4), 
                0px 0px 4px rgba(255, 255, 255, 0.6);
 }
+
+/* Scrollbar personalizada (WebKit/Chromium y Firefox) */
+.scrollbar-purple {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #6B64F2 #0F0B1A; /* thumb color | track color */
+  scrollbar-gutter: stable;
+}
+.scrollbar-purple::-webkit-scrollbar {
+  width: 10px;
+}
+.scrollbar-purple::-webkit-scrollbar-track {
+  background: #0F0B1A;
+  border-radius: 8px;
+}
+.scrollbar-purple::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6B64F2 0%, #8A84FF 100%);
+  border-radius: 8px;
+  border: 2px solid #0F0B1A; /* efecto de "padding" alrededor del thumb */
+}
+.scrollbar-purple::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #7C76FF 0%, #9A95FF 100%);
+}

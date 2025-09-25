@@ -1,5 +1,4 @@
 import Button from "../../components/Button";
-import { Rocket } from "lucide-react"; 
 import Image from "next/image";
 
 export default function HeroSection() {

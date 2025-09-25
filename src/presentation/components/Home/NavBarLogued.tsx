@@ -1,11 +1,11 @@
+"use client";
 import React from 'react';
-import { Usuario } from '@/domain/entities/user';
+import { useAuth } from '@/presentation/hooks/AuthContext';
 
-interface NavBarLoguedProps {
-  usuario: Usuario;
-}
-
-export default function NavBarLogued({ usuario }: NavBarLoguedProps) {
+export default function NavBarLogued() {
+  const { user } = useAuth();
+  const avatar = user?.avatar || '/itachi.png';
+  const name = user?.nombre || 'Usuario';
   return (
     <header className="flex justify-between items-center pb-4 border-b border-[#54188C] font-['Suez-One'] font-black text-2xl">
       {/* Logo de la página */}
@@ -43,13 +43,7 @@ export default function NavBarLogued({ usuario }: NavBarLoguedProps) {
             height={20}
           />
         </button>
-        <img
-          src={usuario.avatar}
-          alt={usuario.nombre}
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
+        <img src={avatar} alt={name} width={40} height={40} className="rounded-full" />
       </div>
     </header>
   );

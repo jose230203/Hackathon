@@ -1,9 +1,10 @@
 import React from "react";
+import type { Curso } from "@/domain/entities/Curso";
 
-export default function CoursesSection({ cursos }: { cursos: any[] }) {
+export default function CoursesSection({ cursos }: { cursos: Curso[] }) {
   return (
-    <div className="grid grid-cols-3 gap-4 rounded-2xl">
-      <div className="col-span-12 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 rounded-2xl">
+      <div className="col-span-1 sm:col-span-2 lg:col-span-3 mb-8">
         <h2 className="text-3xl font-bold text-white">Buenos días, Carlos</h2>
       </div>
       {cursos

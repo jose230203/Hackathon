@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "titulo": "SQL Injection",
+    "categoria": "Web",
+    "dificultad": "Medium",
+    "completados": 120,
+    "avatar": "/CursoImagen.png",
+    "resumen": "Aprende sobre inyecciones SQL y cómo prevenirlas."
+  },
+  {
+    "id": "2",
+    "titulo": "RSA Decryption",
+    "categoria": "Crypto",
+    "dificultad": "Hard",
+    "completados": 80,
+    "avatar": "/CursoImagen2.png",
+    "resumen": "Desafío avanzado de criptografía RSA."
+  }
+]

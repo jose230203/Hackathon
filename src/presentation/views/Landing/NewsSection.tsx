@@ -4,14 +4,10 @@ import React, { useState } from "react";
 import NewsCard from "@/presentation/components/NewsCard";
 
 export default function NewsSection() {
-  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [, setActiveModal] = useState<string | null>(null);
 
   const handleModalOpen = (modal: string) => {
     setActiveModal(modal);
-  };
-
-  const handleModalClose = () => {
-    setActiveModal(null);
   };
 
   return (

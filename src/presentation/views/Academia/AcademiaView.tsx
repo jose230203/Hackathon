@@ -4,19 +4,9 @@ import CursosGrid from "../../components/Academia/CursosGrid";
 import ChatCard from "../../components/Academia/ChatCard";
 import NavBarLogued from "../../components/Home/NavBarLogued";
 
-const usuarioDemo = {
-  id: "1",
-  nombre: "Carlos",
-  correo: "carlos@email.com",
-  avatar: "/itachi.png",
-  contrasena: "",
-  estado: true,
-  fechaRegistro: new Date(),
-};
-
 const AcademiaView: React.FC = () => (
   <div className="min-h-screen p-8 bg-gradient-to-l from-[#2D1B69] via-[#1A0B2E] to-[#0F0B1A]">
-    <NavBarLogued usuario={usuarioDemo} />
+    <NavBarLogued />
     <div className="grid grid-cols-12 gap-4 mx-1">
       <div className="col-span-12">
         <AcademiaHeader />

@@ -1,22 +1,46 @@
-import React from 'react';
-import ChallengeGrid from '@/presentation/components/ChallengeGrid';
+"use client";
+import React, { useEffect, useState } from 'react';
+import ChallengeGrid, { ChallengeLite } from '@/presentation/components/ChallengeGrid';
 import CTFNavbar from '@/presentation/components/CTFNavbar';
- const usuario = {
-    id: "123",
-    nombre: "Carlos Espinoza",
-    correo: "carlos.espinoza@example.com",
-    avatar: "/itachi.png",
-    contrasena: "password123",
-    estado: true,
-    fechaRegistro: new Date(),
-  };
+import { fetchChallenges, type Challenge } from '@/infrastructure/api/ctfService';
 
 
 export default function CTFView() {
+  const [items, setItems] = useState<ChallengeLite[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const data: Challenge[] = await fetchChallenges();
+        if (!mounted) return;
+        // Adapt data if backend fields differ
+        const mapped: ChallengeLite[] = data.map((d) => ({
+          id: d.id,
+          titulo: d.titulo,
+          categoria: d.categoria,
+          dificultad: d.dificultad,
+          completados: d.completados,
+          avatar: d.avatar,
+        }));
+        setItems(mapped);
+      } catch (e: any) {
+        setError(e?.message || 'Error al cargar desafíos');
+      } finally {
+        setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white">
       {/* Navbar */}
-      <CTFNavbar usuario={usuario} />
+  <CTFNavbar />
 
       {/* Main Content */}
       <div className=" text-white p-4 flex items-center justify-between shadow-md">
@@ -43,7 +67,9 @@ export default function CTFView() {
             <option>Pending</option>
           </select>
         </div>
-        <ChallengeGrid />
+        {loading && <p className="mt-6 text-gray-300">Cargando desafíos…</p>}
+        {error && <p className="mt-6 text-red-400">{error}</p>}
+        {items && <ChallengeGrid challenges={items} />}
       </div>
     </section>
   );

@@ -12,8 +12,8 @@ export enum Dificultad {
 export interface Academia {
   id: string; // PK, Guid
   nombre: string;
-  descripcion: string;
-  avatar: string;
+  descripcion?: string;
+  avatar?: string;
   tipoAcademia: TipoAcademia;
   dificultad: Dificultad;
   estado: boolean;

@@ -4,6 +4,8 @@ import { useState } from "react";
 import Button from "@/presentation/components/Button";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/presentation/hooks/AuthContext";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: "Inicio", href: "#" },
@@ -15,6 +17,8 @@ const navLinks = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -22,8 +26,14 @@ export default function Navbar() {
 
   return (
     <nav className="bg-[#0F0B1A] text-white p-4 flex items-center justify-between shadow-md">
-      {/* Logo */}
-      <div className="text-xl font-bold">Hackathon</div>
+      {/* Logo + Marca */}
+      <Link href="/" className="flex items-center gap-2">
+        <Image src="/Logo.svg" alt="Academia Suid" width={32} height={32} className="w-8 h-8" />
+        <div className="text-xl font-bold">
+          <span>Academia</span>
+          <span className="text-[#6B64F2]">Suid</span>
+        </div>
+      </Link>
 
       {/* Links */}
       <div className="hidden md:flex items-center gap-8">
@@ -41,7 +51,15 @@ export default function Navbar() {
         </ul>
 
         {/* Botón para Desktop */}
-        <Button variant="primary">Empieza ya</Button>
+        <Button
+          variant="primary"
+          onClick={() => {
+            if (user) router.push("/home");
+            else router.push("/Onboarding/login");
+          }}
+        >
+          Empieza ya
+        </Button>
       </div>
 
       {/* Botón de Hamburguesa para Mobile */}
@@ -75,42 +93,7 @@ export default function Navbar() {
         </svg>
       </button>
 
-      {/* Search Bar */}
-      <div className="flex items-center space-x-2">
-        <input
-          type="text"
-          placeholder="Buscar..."
-          className="p-2 rounded bg-[#1A0B2E] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#6B64F2]"
-        />
-        <button className="bg-[#6B64F2] px-4 py-2 rounded text-white hover:brightness-125">
-          Buscar
-        </button>
-      </div>
-
-      {/* Dropdown Filters */}
-      <div className="flex space-x-4">
-        <select className="bg-[#1A0B2E] text-white p-2 rounded border border-gray-600">
-          <option>Event</option>
-          <option>Hackathon</option>
-          <option>CTF</option>
-        </select>
-        <select className="bg-[#1A0B2E] text-white p-2 rounded border border-gray-600">
-          <option>Category</option>
-          <option>Web</option>
-          <option>Crypto</option>
-        </select>
-        <select className="bg-[#1A0B2E] text-white p-2 rounded border border-gray-600">
-          <option>Difficulty</option>
-          <option>Easy</option>
-          <option>Medium</option>
-          <option>Hard</option>
-        </select>
-        <select className="bg-[#1A0B2E] text-white p-2 rounded border border-gray-600">
-          <option>Status</option>
-          <option>Completed</option>
-          <option>Pending</option>
-        </select>
-      </div>
+      
 
       {/* Menú para Mobile */}
       <div
@@ -132,7 +115,14 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <Button variant="primary" onClick={toggleMenu}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              toggleMenu();
+              if (user) router.push("/home");
+              else router.push("/Onboarding/login");
+            }}
+          >
             Empieza ya
           </Button>
         </div>

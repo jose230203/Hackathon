@@ -1,21 +1,34 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
+import { execCommand } from "@/infrastructure/api/consoleService";
 
 export default function TerminalView() {
-  const usuario = {
-    id: "123",
-    nombre: "Carlos Espinoza",
-    correo: "carlos.espinoza@example.com",
-    avatar: "/itachi.png",
-    contrasena: "password123",
-    estado: true,
-    fechaRegistro: new Date(),
-  };
+  const [command, setCommand] = useState("");
+  const [output, setOutput] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
 
+  const run = useCallback(async () => {
+    const cmd = command.trim();
+    if (!cmd) return;
+    setLoading(true);
+    setError("");
+    try {
+      const result = await execCommand(cmd);
+      setOutput((prev) => (prev ? prev + "\n" : "") + `$ ${cmd}\n` + result);
+      setCommand("");
+    } catch (e: any) {
+      const msg = e?.response?.data?.error || e?.message || "Error al ejecutar el comando";
+      setError(msg);
+      setOutput((prev) => (prev ? prev + "\n" : "") + `$ ${cmd}\n` + msg);
+    } finally {
+      setLoading(false);
+    }
+  }, [command]);
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white relative">
       {/* Navbar */}
-      <NavBarLogued usuario={usuario} />
+  <NavBarLogued />
 
       <div className="px-8 py-4">
         <h1 className="text-3xl text-white font-bold mb-4 text-shadow-custom">Examen Practico: Introduccion a Nmap</h1>
@@ -31,8 +44,37 @@ export default function TerminalView() {
             </div>
 
             {/* Terminal */}
-            <div className="bg-[#1A0B2E] rounded-lg p-4 shadow-lg h-[300px] border border-[#6B64F2] mt-0">
-              <p className="text-gray-400">Terminal aquí...</p>
+            <div className="bg-[#1A0B2E] rounded-lg p-4 shadow-lg h-[360px] border border-[#6B64F2] mt-0 flex flex-col">
+              <div className="flex-1 overflow-y-auto font-mono text-sm whitespace-pre-wrap scrollbar-purple pr-2">
+                {output ? (
+                  <pre className="leading-relaxed">{output}</pre>
+                ) : (
+                  <p className="text-gray-400">Escribe un comando abajo y presiona Enter o Ejecutar…</p>
+                )}
+              </div>
+              {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+              <div className="mt-3 flex items-center">
+                <input
+                  type="text"
+                  value={command}
+                  onChange={(e) => setCommand(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      run();
+                    }
+                  }}
+                  placeholder="Ejemplo: uptime"
+                  className="flex-1 p-2 rounded bg-[#312E81] text-white border border-[#6B64F2] focus:outline-none focus:ring-2 focus:ring-[#6B64F2]"
+                />
+                <button
+                  onClick={run}
+                  disabled={loading}
+                  className="ml-2 bg-gradient-to-l from-[#02CCA3] to-[#6366F1] text-white px-4 py-2 rounded-lg hover:brightness-125 disabled:opacity-60"
+                >
+                  {loading ? "Ejecutando…" : "Ejecutar"}
+                </button>
+              </div>
             </div>
           </div>
 

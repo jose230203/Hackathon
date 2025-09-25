@@ -1,7 +1,7 @@
 "use client";
 
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Academia } from "@/domain/entities/Academia";
 import { Curso } from "@/domain/entities/Curso";
 import { TipoAcademia, Dificultad } from "@/domain/entities/Academia";
@@ -9,104 +9,54 @@ import ProgressSection from "@/presentation/components/Home/ProgressSection";
 import TopStudentsSection from "@/presentation/components/Home/TopStudentsSection";
 import AcademiesSection from "@/presentation/components/Home/AcademiesSection";
 import ChatbotModal from "@/presentation/components/Home/ChatbotModal";
+import { getListAcademy, getListLastCursos } from "@/infrastructure/api/academyService";
+import Link from "next/link";
+import { useAuth } from "@/presentation/hooks/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function HomeView() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
 
-  const usuario = {
-    id: "123",
-    nombre: "Carlos Espinoza",
-    correo: "carlos.espinoza@example.com",
-    avatar: "/itachi.png",
-    contrasena: "password123",
-    estado: true,
-    fechaRegistro: new Date(),
-  };
 
-  const academias: Academia[] = [
-    {
-      id: "1",
-      nombre: "Academia de Ciberseguridad",
-      descripcion: "Aprende sobre ciberseguridad y hacking ético.",
-      avatar: "/AcademiaProgramacion.svg",
-      tipoAcademia: TipoAcademia.Academia,
-      dificultad: Dificultad.Intermedio,
-      estado: true,
-      fechaRegistro: new Date(),
-    },
-    {
-      id: "2",
-      nombre: "Academia de Programación",
-      descripcion: "Domina los fundamentos de la programación.",
-      avatar: "/AcademiaCyberSeguridad.svg",
-      tipoAcademia: TipoAcademia.Academia,
-      dificultad: Dificultad.Novato,
-      estado: true,
-      fechaRegistro: new Date(),
-    },
-    {
-      id: "3",
-      nombre: "Academia de Ciberseguridad",
-      descripcion: "Domina los fundamentos de la programación.",
-      avatar: "/AcademiaCyberSeguridad2.svg",
-      tipoAcademia: TipoAcademia.Academia,
-      dificultad: Dificultad.Novato,
-      estado: true,
-      fechaRegistro: new Date(),
-    },
-  ];
+  const [academias, setAcademias] = useState<Academia[] | null>(null);
+  const [cursos, setCursos] = useState<Curso[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const cursos: Curso[] = [
-    {
-      id: "1",
-      nombre: "Introducción a MCP",
-      descripcion: "Curso introductorio sobre MCP.",
-      avatar: "/CursoImagen.png",
-      videoUrl: "https://example.com/intro-mcp",
-      academiaId: "1",
-      dificultad: "Intermedio",
-      estado: true,
-      fechaRegistro: new Date(),
-    },
-    {
-      id: "2",
-      nombre: "Curso de hacking ético",
-      descripcion: "Aprende las bases del hacking ético.",
-      avatar: "/CursoImagen2.png",
-      videoUrl: "https://example.com/hacking-etico",
-      academiaId: "1",
-      dificultad: "Avanzado",
-      estado: true,
-      fechaRegistro: new Date(),
-    },
-    {
-      id: "3",
-      nombre: "Curso de Introducción a Growth",
-      descripcion: "Descubre estrategias de crecimiento.",
-      avatar: "/CursoImagen3.png",
-      videoUrl: "https://example.com/intro-growth",
-      academiaId: "2",
-      dificultad: "Novato",
-      estado: true,
-      fechaRegistro: new Date(),
-    },
-    {
-      id: "4",
-      nombre: "Cursos profesionales con n8n",
-      descripcion: "En este curso aprenderás a construir automatizaciones profesionales en n8n.",
-      avatar: "/TestImage.png",
-      videoUrl: "https://example.com/intro-mcp",
-      academiaId: "1",
-      dificultad: "Intermedio",
-      estado: false,
-      fechaRegistro: new Date(),
-    },
-  ];
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const [acs, last] = await Promise.all([
+          getListAcademy(),
+          getListLastCursos(),
+        ]);
+        if (!mounted) return;
+        setAcademias(acs);
+        setCursos(last);
+      } catch (e: any) {
+        setError(e?.message || 'Error al cargar datos');
+      } finally {
+        setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  // Guard de autenticación: espera a que AuthContext termine de cargar antes de decidir
+  useEffect(() => {
+    if (authLoading) return; // aún cargando perfil/token
+    if (!user) {
+      router.replace("/Onboarding/login?next=/home");
+    }
+  }, [user, authLoading, router]);
 
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white relative">
       {/* Navbar */}
-      <NavBarLogued usuario={usuario} />
+  <NavBarLogued />
 
       {/* Contenido principal */}
       <div className="grid grid-cols-12 gap-4  py-4">
@@ -116,7 +66,7 @@ export default function HomeView() {
           <ProgressSection />
 
           {/* Top de estudiantes */}
-          <TopStudentsSection usuario={usuario} />
+          <TopStudentsSection />
         </div>
 
         {/* Columna derecha: Cursos activos, Academias y Otros cursos */}
@@ -126,16 +76,13 @@ export default function HomeView() {
             {/* Saludo */}
             <div className="col-span-12  mb-8">
               <h2 className="text-3xl font-bold text-white">
-                Buenos días, {usuario.nombre}
+                Buenos días, {user?.nombre || "Usuario"}
               </h2>
             </div>
             {cursos
-              .filter((curso) => curso.estado)
+              ?.filter((curso) => curso.estado)
               .map((curso) => (
-                <div
-                  key={curso.id}
-                  className="bg-gradient-to-r from-[#312E81]/30 to-[#581C87]/40 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition overflow-hidden"
-                >
+                <Link href={`/curso/${curso.id}`} key={curso.id} className="bg-gradient-to-r from-[#312E81]/30 to-[#581C87]/40 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition overflow-hidden block">
                   <img
                     src={curso.avatar}
                     alt={curso.nombre}
@@ -147,7 +94,7 @@ export default function HomeView() {
                     </h3>
                     <p className="text-sm text-gray-400">Clase 1 de 21</p>
                   </div>
-                </div>
+                </Link>
               ))}
           </div>
           <div className="col-span-12  mb-8">
@@ -157,17 +104,16 @@ export default function HomeView() {
           </div>
 
           {/* Academias */}
-          <AcademiesSection academias={academias} />
+          {loading && <p className="text-gray-300">Cargando academias…</p>}
+          {error && <p className="text-red-400">{error}</p>}
+          {academias && <AcademiesSection academias={academias} />}
 
           {/* Otros cursos */}
           <div className="grid grid-cols-3 gap-4">
             {cursos
-              .filter((curso) => !curso.estado)
+              ?.filter((curso) => !curso.estado)
               .map((curso) => (
-                <div
-                  key={curso.id}
-                  className="bg-[#1A0B2E] rounded-lg shadow-lg cursor-pointer hover:bg-[#2D1B69] transition overflow-hidden"
-                >
+                <Link href={`/curso/${curso.id}`} key={curso.id} className="bg-[#1A0B2E] rounded-lg shadow-lg cursor-pointer hover:bg-[#2D1B69] transition overflow-hidden block">
                   <img
                     src={curso.avatar}
                     alt={curso.nombre}
@@ -179,14 +125,14 @@ export default function HomeView() {
                     </h3>
                     <p className="text-sm text-gray-400">Clase 1 de 21</p>
                   </div>
-                </div>
+                </Link>
               ))}
           </div>
         </div>
       </div>
 
-      {/* Modal del chatbot */}
-      {isChatbotOpen && <ChatbotModal isOpen={isChatbotOpen} />}
+  {/* Modal del chatbot (siempre montado para conservar estado) */}
+  <ChatbotModal isOpen={isChatbotOpen} />
 
       {/* Botón para abrir el chatbot */}
       <button

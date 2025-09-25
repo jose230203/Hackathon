@@ -1,7 +1,11 @@
-import React from "react";
-import { Usuario } from "../../domain/entities/user";
+"use client";
 
-const CTFNavbar: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
+import React from "react";
+import { useAuth } from "@/presentation/hooks/AuthContext";
+
+const CTFNavbar: React.FC = () => {
+  const { user } = useAuth();
+  const avatar = user?.avatar || "/itachi.png";
   return (
     <nav className="text-white flex items-center justify-between">
       {/* Logo and Text */}
@@ -14,7 +18,7 @@ const CTFNavbar: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
         <a href="/ctf/dashboard" className="hover:text-gray-400">
           Tablero
         </a>
-        <a href="/ctf/challenges" className="hover:text-gray-400">
+        <a href="/ctf" className="hover:text-gray-400">
           Desafíos
         </a>
         <a href="/ctf/leaderboard" className="hover:text-gray-400">
@@ -27,11 +31,7 @@ const CTFNavbar: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
 
       {/* User Icon */}
       <div className="flex items-center justify-end w-1/3 mr-10">
-        <img
-          src={usuario.avatar}
-          alt="Avatar del usuario"
-          className="h-16 w-16 rounded-full"
-        />
+        <img src={avatar} alt="Avatar del usuario" className="h-16 w-16 rounded-full" />
       </div>
     </nav>
   );

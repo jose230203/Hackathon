@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import NavBarLogued from "../../components/Home/NavBarLogued";
 import CourseDetailHeader from "../../components/Curso/CourseDetailHeader";
 import CourseClassList from "../../components/Curso/CourseClassList";
@@ -6,62 +7,89 @@ import CourseCertificate from "../../components/Curso/CourseCertificate";
 import CourseActions from "../../components/Curso/CourseActions";
 import ChatCard from "../../components/Academia/ChatCard";
 import ProgressCard from "../../components/Academia/ProgressCard";
+import { getCursoByCursoId, getListSesionCursoByCursoId } from "@/infrastructure/api/academyService";
+import { useParams } from "next/navigation";
 
-const usuarioDemo = {
-  id: "1",
-  nombre: "Carlos",
-  correo: "carlos@email.com",
-  avatar: "/itachi.png",
-  contrasena: "",
-  estado: true,
-  fechaRegistro: new Date(),
-};
+const CursoDetailView: React.FC = () => {
+  const params = useParams<{ id: string }>();
+  const cursoId = params?.id as string;
+  const [header, setHeader] = useState<{titulo: string; nivel: string; clases: number; horasContenido: number; horasPractica: number; descripcion: string} | null>(null);
+  const [sesiones, setSesiones] = useState<any[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const clasesDemo = [
-  { titulo: "Introducción al curso", duracion: "03:00 minutos", imgSrc: "/Hazagey.jpg" },
-  { titulo: "¿Qué es Nmap?", duracion: "04:10 minutos", imgSrc: "/Academia.png" },
-  { titulo: "Instalación y primeros pasos", duracion: "06:00 minutos", imgSrc: "/Academia.png" },
-  { titulo: "Escaneo de hosts", duracion: "05:30 minutos", imgSrc: "/Academia.png" },
-  { titulo: "Detección de servicios y versiones", duracion: "07:15 minutos", imgSrc: "/Academia.png" },
-  { titulo: "Escaneo de puertos", duracion: "05:50 minutos", imgSrc: "/Academia.png" },
-  { titulo: "Ejemplos prácticos de auditoría", duracion: "08:20 minutos", imgSrc: "/Academia.png" },
-];
+  useEffect(() => {
+    if (!cursoId) return;
+    let mounted = true;
+    (async () => {
+      try {
+        const [curso, ses] = await Promise.all([
+          getCursoByCursoId(cursoId),
+          getListSesionCursoByCursoId(cursoId),
+        ]);
+        if (!mounted) return;
+        setHeader({
+          titulo: curso.nombre,
+          nivel: `Nivel ${String(curso.dificultad ?? '').toLowerCase()}`,
+          clases: ses.length,
+          horasContenido: 0,
+          horasPractica: 0,
+          descripcion: curso.descripcion ?? "",
+        });
+        setSesiones(ses.map(s => ({ titulo: s.nombre, duracion: "--", imgSrc: s.avatar || "/Academia.png" })));
+      } catch (e: any) {
+        setError(e?.message || 'Error al cargar curso');
+      } finally {
+        setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [cursoId]);
 
-const CursoDetailView: React.FC = () => (
-  <div className="min-h-screen bg-gradient-to-l from-[#2D1B69] via-[#1A0B2E] to-[#0F0B1A]">
-    <NavBarLogued usuario={usuarioDemo} />
-    <div className=" max-w-screen mx-10 grid grid-cols-12  gap-4">
-      <div className=" col-span-12">
-        <CourseDetailHeader
-          titulo="Introducción a Nmap"
-          nivel="Nivel Básico"
-          clases={10}
-          horasContenido={3}
-          horasPractica={5}
-          descripcion="Aprende a utilizar Nmap para escanear redes, identificar hosts, servicios y vulnerabilidades. Este módulo te guiará desde los conceptos básicos hasta ejemplos prácticos de uso en auditoría de seguridad. Ideal para quienes inician en ciberseguridad."
-        />
-      </div>
-      <div className="col-span-8">
-        <h3 className="text-xl font-bold text-white mb-2 mt-6">Clases del curso</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CourseClassList clases={clasesDemo.slice(0,3)} />
-          <CourseClassList clases={clasesDemo.slice(3,6)} />
+  return (
+    <div className="min-h-screen bg-gradient-to-l from-[#2D1B69] via-[#1A0B2E] to-[#0F0B1A]">
+  <NavBarLogued />
+      <div className=" max-w-screen mx-10 grid grid-cols-12  gap-4">
+        <div className=" col-span-12">
+          {loading && <p className="text-gray-300">Cargando curso…</p>}
+          {error && <p className="text-red-400">{error}</p>}
+          {header && (
+            <CourseDetailHeader
+              titulo={header.titulo}
+              nivel={header.nivel}
+              clases={header.clases}
+              horasContenido={header.horasContenido}
+              horasPractica={header.horasPractica}
+              descripcion={header.descripcion}
+            />
+          )}
         </div>
-        <div className="flex flex-col md:flex-row gap-8 mt-8">
-          <CourseCertificate />
-          <CourseActions />
+        <div className="col-span-8">
+          <h3 className="text-xl font-bold text-white mb-2 mt-6">Clases del curso</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {sesiones && (
+              <>
+                <CourseClassList clases={sesiones.slice(0, Math.ceil(sesiones.length/2))} />
+                <CourseClassList clases={sesiones.slice(Math.ceil(sesiones.length/2))} />
+              </>
+            )}
+          </div>
+          <div className="flex flex-col md:flex-row gap-8 mt-8">
+            <CourseCertificate />
+            <CourseActions />
+          </div>
         </div>
-      </div>
-      <div className="col-start-10 col-end-14">
-        <div className="mb-4">
-          <ProgressCard />
-        </div>
-        <div className="sticky top-24">
-          <ChatCard />
+        <div className="col-start-10 col-end-14">
+          <div className="mb-4">
+            <ProgressCard />
+          </div>
+          <div className="sticky top-24">
+            <ChatCard />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default CursoDetailView;

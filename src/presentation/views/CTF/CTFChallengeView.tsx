@@ -1,24 +1,39 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CTFNavbar from '@/presentation/components/CTFNavbar';
+import { fetchChallengeById, startVm, stopVm, submitFlags, type Challenge } from '@/infrastructure/api/ctfService';
 
-const usuario = {
-  id: "123",
-  nombre: "Carlos Espinoza",
-  correo: "carlos.espinoza@example.com",
-  avatar: "/itachi.png",
-  contrasena: "password123",
-  estado: true,
-  fechaRegistro: new Date(),
-};
-
-export default function CTFChallengeView() {
+type Props = { id: string };
+export default function CTFChallengeView({ id }: Props) {
   const [vmActive, setVmActive] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [userFlag, setUserFlag] = useState("");
+  const [rootFlag, setRootFlag] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const ch = await fetchChallengeById(id);
+        if (!mounted) return;
+        setChallenge(ch);
+      } catch (e: any) {
+        setError(e?.message || 'No se pudo cargar el challenge');
+      } finally {
+        setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
 
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white">
-      <CTFNavbar usuario={usuario} />
+  <CTFNavbar />
 
       <div className="mx-auto p-6 grid grid-cols-12 gap-6">
         {/* Left: VM (9 cols) then questions */}
@@ -27,12 +42,24 @@ export default function CTFChallengeView() {
           <div className="bg-[#1A142B] rounded-lg p-6 flex flex-col gap-4">
             <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-2xl font-bold">SecureNet VM</h1>
+                <h1 className="text-2xl font-bold">{challenge?.titulo ?? 'Challenge'}</h1>
                 <p className="text-sm text-gray-300">Máquina virtual asociada al challenge.</p>
               </div>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => setVmActive(!vmActive)}
+                  onClick={async () => {
+                    try {
+                      if (!vmActive) {
+                        await startVm(id);
+                        setVmActive(true);
+                      } else {
+                        await stopVm(id);
+                        setVmActive(false);
+                      }
+                    } catch (e) {
+                      // opcional: mostrar toast
+                    }
+                  }}
                   className={`px-4 py-2 rounded text-white ${vmActive ? 'bg-green-500' : 'bg-purple-600'}`}
                 >
                   {vmActive ? 'Detener VM' : 'Iniciar VM'}
@@ -47,8 +74,8 @@ export default function CTFChallengeView() {
             <div className="bg-white text-black rounded-lg p-6 mt-2 flex items-center justify-center">
               {vmActive ? (
                 <div className="text-center">
-                  <img src="/SecureNet.png" className="w-full max-w-md mb-4 rounded" alt="VM" />
-                  <h3 className="font-bold text-xl">SecureNet VM</h3>
+                  <img src={challenge?.avatar || "/SecureNet.png"} className="w-full max-w-md mb-4 rounded" alt="VM" />
+                  <h3 className="font-bold text-xl">{challenge?.titulo ?? 'Challenge'}</h3>
                   <p className="text-sm text-gray-600">La VM está activa y lista para conectarse.</p>
                 </div>
               ) : (
@@ -65,10 +92,18 @@ export default function CTFChallengeView() {
           <div className="bg-[#1A142B] rounded-lg p-6">
             <h2 className="text-xl font-bold mb-4">Preguntas de la máquina</h2>
             <label className="block text-sm mb-2">Flag de usuario</label>
-            <input className="w-full p-2 rounded bg-[#0F0B1A] text-white border border-gray-700 mb-4" />
+            <input value={userFlag} onChange={(e) => setUserFlag(e.target.value)} className="w-full p-2 rounded bg-[#0F0B1A] text-white border border-gray-700 mb-4" />
             <label className="block text-sm mb-2">Flag de root</label>
-            <input className="w-full p-2 rounded bg-[#0F0B1A] text-white border border-gray-700 mb-4" />
-            <button className="bg-purple-600 text-white px-4 py-2 rounded">Enviar flags</button>
+            <input value={rootFlag} onChange={(e) => setRootFlag(e.target.value)} className="w-full p-2 rounded bg-[#0F0B1A] text-white border border-gray-700 mb-4" />
+            <button onClick={async () => {
+              try {
+                await submitFlags(id, { userFlag, rootFlag });
+                setUserFlag("");
+                setRootFlag("");
+              } catch (e) {
+                // opcional: mostrar error
+              }
+            }} className="bg-purple-600 text-white px-4 py-2 rounded">Enviar flags</button>
           </div>
         </div>
 
@@ -76,10 +111,10 @@ export default function CTFChallengeView() {
         <aside className="col-span-12 lg:col-span-3 flex flex-col gap-6">
           <div className="bg-[#2D1B69] rounded-lg p-4 flex flex-col items-center">
             <div className="w-full grid grid-cols-1 gap-4">
-              <img src="/SecureNet.png" alt="machine" className="w-full rounded mb-2 object-cover" />
+              <img src={challenge?.avatar || "/SecureNet.png"} alt="machine" className="w-full rounded mb-2 object-cover" />
               <div className="text-center text-white">
-                <h4 className="font-semibold">SecureNet VM</h4>
-                <p className="text-sm text-gray-200">Resumen de la máquina</p>
+                <h4 className="font-semibold">{challenge?.titulo ?? 'Challenge'}</h4>
+                <p className="text-sm text-gray-200">{challenge?.resumen ?? 'Resumen de la máquina'}</p>
               </div>
             </div>
           </div>
