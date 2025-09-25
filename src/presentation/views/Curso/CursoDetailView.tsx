@@ -29,34 +29,35 @@ const clasesDemo = [
 
 const CursoDetailView: React.FC = () => (
   <div className="min-h-screen bg-gradient-to-l from-[#2D1B69] via-[#1A0B2E] to-[#0F0B1A]">
-   <NavBarLogued usuario={usuarioDemo} />
-    <div className="max-w-7xl mx-auto">
-      
-      <div className="flex flex-col md:flex-row gap-8 mt-6">
-        <div className="flex-1">
-          <CourseDetailHeader
-            titulo="Introducción a Nmap"
-            nivel="Nivel Básico"
-            clases={10}
-            horasContenido={3}
-            horasPractica={5}
-            descripcion="Aprende a utilizar Nmap para escanear redes, identificar hosts, servicios y vulnerabilidades. Este módulo te guiará desde los conceptos básicos hasta ejemplos prácticos de uso en auditoría de seguridad. Ideal para quienes inician en ciberseguridad."
-          />
-          <h3 className="text-xl font-bold text-white mb-2 mt-6">Clases del curso</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <CourseClassList clases={clasesDemo.slice(0,3)} />
-            <CourseClassList clases={clasesDemo.slice(3,6)} />
-          </div>
-          <div className="flex flex-col md:flex-row gap-8 mt-8">
-            <CourseCertificate />
-            <CourseActions />
-          </div>
+    <NavBarLogued usuario={usuarioDemo} />
+    <div className=" max-w-screen mx-10 grid grid-cols-12  gap-4">
+      <div className=" col-span-12">
+        <CourseDetailHeader
+          titulo="Introducción a Nmap"
+          nivel="Nivel Básico"
+          clases={10}
+          horasContenido={3}
+          horasPractica={5}
+          descripcion="Aprende a utilizar Nmap para escanear redes, identificar hosts, servicios y vulnerabilidades. Este módulo te guiará desde los conceptos básicos hasta ejemplos prácticos de uso en auditoría de seguridad. Ideal para quienes inician en ciberseguridad."
+        />
+      </div>
+      <div className="col-span-8">
+        <h3 className="text-xl font-bold text-white mb-2 mt-6">Clases del curso</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CourseClassList clases={clasesDemo.slice(0,3)} />
+          <CourseClassList clases={clasesDemo.slice(3,6)} />
         </div>
-        <div className="w-full md:w-96 flex flex-col gap-4">
+        <div className="flex flex-col md:flex-row gap-8 mt-8">
+          <CourseCertificate />
+          <CourseActions />
+        </div>
+      </div>
+      <div className="col-start-10 col-end-14">
+        <div className="mb-4">
           <ProgressCard />
-          <div className="sticky top-24">
-            <ChatCard />
-          </div>
+        </div>
+        <div className="sticky top-24">
+          <ChatCard />
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ const challenges: Academia[] = [
     id: "1",
     nombre: "SQL Injection",
     descripcion: "Aprende sobre inyecciones SQL y cómo prevenirlas.",
-    avatar: "sql-injection.png",
+    avatar: "/sql-injection.png",
     tipoAcademia: TipoAcademia.Academia, 
     dificultad: Dificultad.Intermedio,
     estado: true,
@@ -17,7 +17,7 @@ const challenges: Academia[] = [
     id: "2",
     nombre: "RSA Decryption",
     descripcion: "Desafío avanzado de criptografía RSA.",
-    avatar: "rsa-decryption.png",
+    avatar: "/rsa-decryption.png",
     tipoAcademia: TipoAcademia.Laboratorio, 
     dificultad: Dificultad.Avanzado,
     estado: true,
@@ -27,7 +27,7 @@ const challenges: Academia[] = [
     id: "3",
     nombre: "Memory Dump Analysis",
     descripcion: "Analiza volcados de memoria para encontrar pistas.",
-    avatar: "memory-dump.png",
+    avatar: "/CursoImagen.png",
     tipoAcademia: TipoAcademia.Academia,
     dificultad: Dificultad.Novato,
     estado: true,
@@ -51,6 +51,7 @@ const ChallengeGrid: React.FC = () => {
               : "Hard"
           } 
           completedCount={0}
+          avatar={challenge.avatar}
         />
       ))}
     </div>

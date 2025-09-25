@@ -1,5 +1,5 @@
 import React from "react";
-import AcademiaView from "../../presentation/views/Academia/AcademiaView";
+import AcademiaView from "../../../presentation/views/Academia/AcademiaView";
 
 const AcademiaPage: React.FC = () => <AcademiaView />;
 
