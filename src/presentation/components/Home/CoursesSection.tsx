@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import type { Curso } from "@/domain/entities/Curso";
 
 export default function CoursesSection({ cursos }: { cursos: Curso[] }) {
@@ -14,11 +15,17 @@ export default function CoursesSection({ cursos }: { cursos: Curso[] }) {
             key={curso.id}
             className="bg-gradient-to-r from-[#312E81]/30 to-[#581C87]/40 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition overflow-hidden"
           >
-            <img
-              src={curso.avatar}
-              alt={curso.nombre}
-              className="w-full h-40 object-cover rounded-2xl"
-            />
+            <div className="relative w-full h-40">
+              <Image
+                src={curso.avatar || "/Hazagey.jpg"}
+                alt={curso.nombre}
+                fill
+                className="object-cover rounded-2xl"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={false}
+                unoptimized
+              />
+            </div>
             <div className="p-4">
               <h3 className="text-lg font-bold text-white">{curso.nombre}</h3>
               <p className="text-sm text-gray-400">Clase 1 de 21</p>

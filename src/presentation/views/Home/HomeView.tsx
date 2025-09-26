@@ -1,10 +1,10 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
 import React, { useEffect, useState } from "react";
 import { Academia } from "@/domain/entities/Academia";
 import { Curso } from "@/domain/entities/Curso";
-import { TipoAcademia, Dificultad } from "@/domain/entities/Academia";
 import ProgressSection from "@/presentation/components/Home/ProgressSection";
 import TopStudentsSection from "@/presentation/components/Home/TopStudentsSection";
 import AcademiesSection from "@/presentation/components/Home/AcademiesSection";
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 export default function HomeView() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const { user, loading: authLoading, error: authError, refreshProfile } = useAuth();
+  const { user, loading: authLoading, refreshProfile } = useAuth();
   const router = useRouter();
 
 

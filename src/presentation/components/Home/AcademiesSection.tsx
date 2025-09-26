@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import type { Academia } from "@/domain/entities/Academia";
 import Link from "next/link";

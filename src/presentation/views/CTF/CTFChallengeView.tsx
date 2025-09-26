@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import React, { useEffect, useMemo, useState } from 'react';
 import CTFNavbar from '@/presentation/components/CTFNavbar';
@@ -44,6 +45,14 @@ export default function CTFChallengeView({ id }: Props) {
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white">
   <CTFNavbar />
 
+      {/* Mensajes de estado */}
+      {loading && (
+        <div className="px-6 py-2 text-sm text-gray-300">Cargando challenge…</div>
+      )}
+      {error && (
+        <div className="px-6 py-2 text-sm text-red-400">{error}</div>
+      )}
+
       <div className="mx-auto p-6 grid grid-cols-12 gap-6">
         {/* Left: VM (9 cols) then questions */}
         <div className="col-span-12 lg:col-span-9 flex flex-col gap-6">
@@ -67,7 +76,7 @@ export default function CTFChallengeView({ id }: Props) {
                         await stopVm(effectiveId);
                         setVmActive(false);
                       }
-                    } catch (e) {
+                    } catch {
                       // opcional: mostrar toast
                     }
                   }}
@@ -112,7 +121,7 @@ export default function CTFChallengeView({ id }: Props) {
                 await submitFlags(effectiveId, { userFlag, rootFlag });
                 setUserFlag("");
                 setRootFlag("");
-              } catch (e) {
+              } catch {
                 // opcional: mostrar error
               }
             }} className="bg-purple-600 text-white px-4 py-2 rounded">Enviar flags</button>

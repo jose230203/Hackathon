@@ -1,6 +1,5 @@
 import React from "react";
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
-import ProgressSection from "@/presentation/components/Home/ProgressSection";
 import ChatbotModal from "@/presentation/components/Home/ChatbotModal";
 
 export default function CourseView() {

@@ -1,13 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 
 interface Props {
   titulo: string;
   duracion: string;
   imgSrc: string;
-  selected?: boolean;
 }
 
-const CourseClassCard: React.FC<Props> = ({ titulo, duracion, imgSrc, selected }) => (
+const CourseClassCard: React.FC<Props> = ({ titulo, duracion, imgSrc }) => (
   <div
   className={`flex items-center gap-4 p-2 rounded-lg cursor-pointer transition-all duration-200 bg-[#312E81]/30 group hover:brightness-200 hover:shadow-lg`}
   >

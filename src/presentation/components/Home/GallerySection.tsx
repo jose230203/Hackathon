@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Curso } from '@/domain/entities/Curso';
 import { Dificultad } from '@/domain/entities/Academia';
 
@@ -34,7 +35,9 @@ export default function GallerySection() {
         <div key={curso.id} className="bg-[#241A49] rounded-lg p-6 shadow-lg">
           <h2 className="text-2xl font-bold mb-4">{curso.nombre}</h2>
           <p className="text-gray-300 mb-4">{curso.descripcion}</p>
-          <img src={curso.avatar} alt={curso.nombre} className="rounded-lg" />
+          <div className="relative w-full h-48">
+            <Image src={curso.avatar || "/Hazagey.jpg"} alt={curso.nombre} fill className="object-cover rounded-lg" />
+          </div>
         </div>
       ))}
     </div>

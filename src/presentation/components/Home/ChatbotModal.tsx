@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { messageGeneral, type AssistantStreamChunk } from "@/infrastructure/api/assistantService";
 import { useAuth } from "@/presentation/hooks/AuthContext";

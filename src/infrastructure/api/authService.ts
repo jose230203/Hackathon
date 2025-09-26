@@ -24,7 +24,6 @@ export async function registerUser(payload: RegisterPayload) {
     return data;
   } catch (err: unknown) {
     if (typeof window !== "undefined") {
-      // eslint-disable-next-line no-console
       console.warn("Registro falló en:", (api.defaults.baseURL || "") + REGISTER_PATH, err);
     }
     // Intento de fallback opcional si existe otra ruta en algún entorno
@@ -32,7 +31,8 @@ export async function registerUser(payload: RegisterPayload) {
       const { data } = await api.post("/usuario/create", body);
       return data;
     } catch (err2: unknown) {
-      const e: any = err2 || err;
+      type ApiError = { response?: { data?: { message?: string; error?: string } } ; message?: string };
+      const e = (err2 || err) as ApiError;
       const serverMsg = e?.response?.data?.message || e?.response?.data?.error || e?.message;
       throw new Error(serverMsg || "No se pudo registrar el usuario");
     }

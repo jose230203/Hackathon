@@ -168,7 +168,7 @@ export default function RegisterForm() {
             </p>
             <h4 className="font-semibold text-white">3. Contenido</h4>
             <p>
-              El contenido educativo se ofrece "tal cual" para fines formativos. No garantizamos la disponibilidad ininterrumpida del servicio.
+              El contenido educativo se ofrece &quot;tal cual&quot; para fines formativos. No garantizamos la disponibilidad ininterrumpida del servicio.
             </p>
             <h4 className="font-semibold text-white">4. Privacidad</h4>
             <p>

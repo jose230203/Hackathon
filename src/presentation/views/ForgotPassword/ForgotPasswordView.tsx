@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 export default function ForgotPasswordView() {
   return (
@@ -8,7 +9,7 @@ export default function ForgotPasswordView() {
       <div className="bg-[#1A0B2E] rounded-lg p-8 shadow-lg w-[400px] text-center">
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20  flex items-center justify-center">
-            <img src="/Logo.svg" alt="Logo" className="w-20 h-20" />
+            <Image src="/Logo.svg" alt="Logo" width={80} height={80} className="w-20 h-20" />
           </div>
         </div>
         <h1 className="text-2xl font-bold mb-2">¿Has olvidado tu contraseña?</h1>

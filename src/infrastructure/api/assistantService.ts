@@ -39,7 +39,7 @@ export async function streamAssistant(
       try {
         const obj = JSON.parse(text);
         throw new Error(obj?.error || obj?.message || res.statusText);
-      } catch (_ignored) {
+      } catch {
         throw new Error(text || res.statusText);
       }
     } catch (e) {
@@ -72,7 +72,7 @@ export async function streamAssistant(
       try {
         const obj = JSON.parse(dataText) as AssistantStreamChunk;
         onChunk(obj);
-      } catch (_) {
+      } catch {
         // ignorar bloques que no sean JSON
       }
     }

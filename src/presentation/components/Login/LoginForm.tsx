@@ -39,7 +39,7 @@ export default function LoginForm() {
       }
       // Si no hubo token, considerar credenciales inválidas
       setError("Problema con el correo o contraseña");
-    } catch (err) {
+    } catch {
       setError("Problema con el correo o contraseña");
     } finally {
       setLoading(false);
