@@ -1,9 +1,15 @@
 import CTFChallengeView from "@/presentation/views/CTF/CTFChallengeView";
 
-export default function CTFChallengePage() {
+type PageProps = {
+  searchParams?: Record<string, string | string[] | undefined>;
+};
+
+export default function CTFChallengePage({ searchParams }: PageProps) {
+  const raw = searchParams?.id;
+  const id = Array.isArray(raw) ? raw[0] : raw;
   return (
     <div>
-      <CTFChallengeView />
+      <CTFChallengeView id={id} />
     </div>
   );
 }

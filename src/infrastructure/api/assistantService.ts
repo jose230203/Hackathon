@@ -8,7 +8,7 @@ export type AssistantStreamChunk =
 // Utilidad para consumir SSE desde fetch y propagar callbacks por chunk
 export async function streamAssistant(
   url: string,
-  body: Record<string, any>,
+  body: Record<string, unknown>,
   onChunk: (chunk: AssistantStreamChunk) => void
 ) {
   // Construir URL base de forma segura
@@ -16,7 +16,7 @@ export async function streamAssistant(
   const path = url.startsWith("/") ? url : `/${url}`;
 
   // Incluir Authorization si existe
-  let auth = (api.defaults.headers?.common as any)?.Authorization as string | undefined;
+  let auth: string | undefined = (api.defaults.headers?.common as unknown as { Authorization?: string })?.Authorization;
   if (!auth && typeof window !== "undefined") {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) auth = `Bearer ${token}`;
@@ -39,11 +39,12 @@ export async function streamAssistant(
       try {
         const obj = JSON.parse(text);
         throw new Error(obj?.error || obj?.message || res.statusText);
-      } catch (_) {
+      } catch (_ignored) {
         throw new Error(text || res.statusText);
       }
-    } catch (e: any) {
-      throw new Error(e?.message || res.statusText);
+    } catch (e) {
+      const err = e as Error;
+      throw new Error(err.message || res.statusText);
     }
   }
 

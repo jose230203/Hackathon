@@ -21,9 +21,10 @@ export default function TopStudentsSection() {
       try {
         const top = await getTopFiveUsuarioProgreso();
         if (!mounted) return;
-        setItems(top as any);
-      } catch (e: any) {
-        setError(e?.message || "No se pudo cargar el top 5");
+        setItems(top);
+      } catch (e) {
+        const err = e as Error;
+        setError(err.message || "No se pudo cargar el top 5");
       } finally {
         setLoading(false);
       }

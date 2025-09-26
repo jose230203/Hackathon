@@ -18,8 +18,9 @@ export default function ProgressSection() {
         setPuntos(up.puntos ?? 0);
         setRacha(up.racha ?? 0);
         setRetos(up.retosCompletados ?? 0);
-      } catch (e: any) {
-        setError(e?.message || "No se pudo cargar el progreso");
+      } catch (e) {
+        const err = e as Error;
+        setError(err.message || "No se pudo cargar el progreso");
       } finally {
         setLoading(false);
       }

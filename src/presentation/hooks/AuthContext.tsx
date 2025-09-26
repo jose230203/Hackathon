@@ -20,7 +20,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const mapUser = (u: any): Usuario => ({
+  type RawUsuario = Partial<{
+    Id: string; id: string;
+    Nombre: string; nombre: string;
+    Correo: string; correo: string;
+    Avatar: string; avatar: string;
+    Estado: boolean; estado: boolean;
+    FechaRegistro: string | Date;
+  }>;
+
+  const mapUser = (u: RawUsuario): Usuario => ({
     id: u?.Id ?? u?.id ?? "",
     nombre: u?.Nombre ?? u?.nombre,
     correo: u?.Correo ?? u?.correo,
@@ -42,8 +51,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAuthToken(token);
       const u = await getProfile(token);
       setUser(mapUser(u));
-    } catch (e: any) {
-      setError(e?.message || "No se pudo cargar el perfil");
+    } catch (e) {
+      const err = e as Error;
+      setError(err.message || "No se pudo cargar el perfil");
       setUser(null);
     } finally {
       setLoading(false);

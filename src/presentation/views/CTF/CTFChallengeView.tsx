@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CTFNavbar from '@/presentation/components/CTFNavbar';
 import { fetchChallengeById, startVm, stopVm, submitFlags, type Challenge } from '@/infrastructure/api/ctfService';
+import { useParams, useSearchParams } from 'next/navigation';
 
-type Props = { id: string };
+type Props = { id?: string };
 export default function CTFChallengeView({ id }: Props) {
+  const params = useParams();
+  const search = useSearchParams();
+  const effectiveId = useMemo(() => id ?? (params as unknown as { id?: string })?.id ?? search.get('id') ?? null, [id, params, search]);
   const [vmActive, setVmActive] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,12 +20,17 @@ export default function CTFChallengeView({ id }: Props) {
   useEffect(() => {
     let mounted = true;
     (async () => {
+      if (!effectiveId) {
+        setLoading(false);
+        return;
+      }
       try {
-        const ch = await fetchChallengeById(id);
+        const ch = await fetchChallengeById(effectiveId);
         if (!mounted) return;
         setChallenge(ch);
-      } catch (e: any) {
-        setError(e?.message || 'No se pudo cargar el challenge');
+      } catch (e) {
+        const err = e as Error;
+        setError(err.message || 'No se pudo cargar el challenge');
       } finally {
         setLoading(false);
       }
@@ -29,7 +38,7 @@ export default function CTFChallengeView({ id }: Props) {
     return () => {
       mounted = false;
     };
-  }, [id]);
+  }, [effectiveId]);
 
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white">
@@ -50,10 +59,12 @@ export default function CTFChallengeView({ id }: Props) {
                   onClick={async () => {
                     try {
                       if (!vmActive) {
-                        await startVm(id);
+                        if (!effectiveId) return;
+                        await startVm(effectiveId);
                         setVmActive(true);
                       } else {
-                        await stopVm(id);
+                        if (!effectiveId) return;
+                        await stopVm(effectiveId);
                         setVmActive(false);
                       }
                     } catch (e) {
@@ -97,7 +108,8 @@ export default function CTFChallengeView({ id }: Props) {
             <input value={rootFlag} onChange={(e) => setRootFlag(e.target.value)} className="w-full p-2 rounded bg-[#0F0B1A] text-white border border-gray-700 mb-4" />
             <button onClick={async () => {
               try {
-                await submitFlags(id, { userFlag, rootFlag });
+                if (!effectiveId) return;
+                await submitFlags(effectiveId, { userFlag, rootFlag });
                 setUserFlag("");
                 setRootFlag("");
               } catch (e) {

@@ -1,6 +1,7 @@
 import React from "react";
 import CursoCard from "./CursoCard";
 import { Curso } from "@/domain/entities/Curso";
+import { Dificultad } from "@/domain/entities/Academia";
 
 const cursos: Curso[] = [
   {
@@ -10,7 +11,7 @@ const cursos: Curso[] = [
     avatar: "/Hazagey.jpg",
     videoUrl: "",
     academiaId: "A1",
-    dificultad: "Básico",
+  dificultad: Dificultad.Novato,
     estado: true,
     fechaRegistro: new Date(),
   },
@@ -21,7 +22,7 @@ const cursos: Curso[] = [
     avatar: "/Etico.png",
     videoUrl: "",
     academiaId: "A1",
-    dificultad: "Intermedio",
+  dificultad: Dificultad.Intermedio,
     estado: true,
     fechaRegistro: new Date(),
   },
@@ -32,7 +33,7 @@ const cursos: Curso[] = [
     avatar: "/Growth.png",
     videoUrl: "",
     academiaId: "A1",
-    dificultad: "Básico",
+  dificultad: Dificultad.Novato,
     estado: true,
     fechaRegistro: new Date(),
   },
@@ -43,7 +44,7 @@ const cursos: Curso[] = [
     avatar: "/MCP.png",
     videoUrl: "",
     academiaId: "A1",
-    dificultad: "Básico",
+  dificultad: Dificultad.Novato,
     estado: true,
     fechaRegistro: new Date(),
   },
@@ -54,7 +55,7 @@ const cursos: Curso[] = [
     avatar: "/Hazagey.jpg",
     videoUrl: "",
     academiaId: "A1",
-    dificultad: "Intermedio",
+  dificultad: Dificultad.Intermedio,
     estado: true,
     fechaRegistro: new Date(),
   },
@@ -65,7 +66,7 @@ const cursos: Curso[] = [
     avatar: "/Growth.png",
     videoUrl: "",
     academiaId: "A1",
-    dificultad: "Básico",
+  dificultad: Dificultad.Novato,
     estado: true,
     fechaRegistro: new Date(),
   },
@@ -76,7 +77,12 @@ const CursosGrid: React.FC = () => (
     <h2 className="text-2xl font-bold mb-4 text-white">Los cursos de la academia</h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       {cursos.map((curso) => (
-        <CursoCard key={curso.id} titulo={curso.nombre} clase={curso.descripcion} imgSrc={curso.avatar} />
+        <CursoCard
+          key={curso.id}
+          titulo={curso.nombre}
+          clase={curso.descripcion ?? ""}
+          imgSrc={curso.avatar ?? ""}
+        />
       ))}
     </div>
   </section>

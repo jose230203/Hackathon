@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useAuth } from "@/presentation/hooks/AuthContext";
 
 const CTFNavbar: React.FC = () => {
@@ -15,18 +16,18 @@ const CTFNavbar: React.FC = () => {
 
       {/* Links */}
       <div className="flex items-center justify-start ml-20 space-x-4 text-3xl w-1/3">
-        <a href="/ctf/dashboard" className="hover:text-gray-400">
+        <Link href="/ctf/dashboard" className="hover:text-gray-400">
           Tablero
-        </a>
-        <a href="/ctf" className="hover:text-gray-400">
+        </Link>
+        <Link href="/ctf" className="hover:text-gray-400">
           Desafíos
-        </a>
-        <a href="/ctf/leaderboard" className="hover:text-gray-400">
+        </Link>
+        <Link href="/ctf/leaderboard" className="hover:text-gray-400">
           Clasificación
-        </a>
-        <a href="/ctf/profile" className="hover:text-gray-400">
+        </Link>
+        <Link href="/ctf/profile" className="hover:text-gray-400">
           Perfil
-        </a>
+        </Link>
       </div>
 
       {/* User Icon */}

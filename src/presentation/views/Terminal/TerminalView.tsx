@@ -1,3 +1,4 @@
+"use client";
 import React, { useCallback, useState } from "react";
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
 import { execCommand } from "@/infrastructure/api/consoleService";
@@ -17,8 +18,9 @@ export default function TerminalView() {
       const result = await execCommand(cmd);
       setOutput((prev) => (prev ? prev + "\n" : "") + `$ ${cmd}\n` + result);
       setCommand("");
-    } catch (e: any) {
-      const msg = e?.response?.data?.error || e?.message || "Error al ejecutar el comando";
+    } catch (e) {
+      const err = e as unknown as { response?: { data?: { error?: string } }; message?: string };
+      const msg = err?.response?.data?.error || err?.message || "Error al ejecutar el comando";
       setError(msg);
       setOutput((prev) => (prev ? prev + "\n" : "") + `$ ${cmd}\n` + msg);
     } finally {

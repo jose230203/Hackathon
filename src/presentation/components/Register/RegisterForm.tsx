@@ -27,8 +27,9 @@ export default function RegisterForm() {
     try {
       await registerUser({ nombre, correo, contrasena });
       setSuccess(true);
-    } catch (err: any) {
-      setError(err?.message || "Error al registrarse");
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message || "Error al registrarse");
     } finally {
       setLoading(false);
     }

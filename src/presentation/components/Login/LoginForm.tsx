@@ -33,12 +33,15 @@ export default function LoginForm() {
         } catch {}
         // Configurar interceptor con el token actual
         setAuthToken(res.token);
+        // Marcar que acabamos de iniciar sesión para evitar rebote del guard
+        try { sessionStorage.setItem('auth:justLoggedIn', '1'); } catch {}
+        // Navegar a home
         router.push('/home');
         return;
       }
       // Si no hubo token, considerar credenciales inválidas
       setError("Problema con el correo o contraseña");
-    } catch (err: any) {
+    } catch (err) {
       setError("Problema con el correo o contraseña");
     } finally {
       setLoading(false);

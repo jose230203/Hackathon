@@ -1,5 +1,6 @@
 import React from 'react';
 import { Curso } from '@/domain/entities/Curso';
+import { Dificultad } from '@/domain/entities/Academia';
 
 const cursos: Curso[] = [
   {
@@ -9,7 +10,7 @@ const cursos: Curso[] = [
     avatar: '/path/to/course1.png',
     videoUrl: 'https://example.com/video1',
     academiaId: '1',
-    dificultad: 'Novato',
+  dificultad: Dificultad.Novato,
     estado: true,
     fechaRegistro: new Date(),
   },
@@ -20,7 +21,7 @@ const cursos: Curso[] = [
     avatar: '/path/to/course2.png',
     videoUrl: 'https://example.com/video2',
     academiaId: '2',
-    dificultad: 'Avanzado',
+  dificultad: Dificultad.Avanzado,
     estado: true,
     fechaRegistro: new Date(),
   },

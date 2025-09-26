@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 export default function HomeView() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, error: authError, refreshProfile } = useAuth();
   const router = useRouter();
 
 
@@ -36,8 +36,9 @@ export default function HomeView() {
         if (!mounted) return;
         setAcademias(acs);
         setCursos(last);
-      } catch (e: any) {
-        setError(e?.message || 'Error al cargar datos');
+      } catch (e) {
+        const err = e as Error;
+        setError(err.message || 'Error al cargar datos');
       } finally {
         setLoading(false);
       }
@@ -46,12 +47,41 @@ export default function HomeView() {
   }, []);
 
   // Guard de autenticación: espera a que AuthContext termine de cargar antes de decidir
+  // Evitar "rebote" al login justo después de iniciar sesión
+  const [justNavigatedFromLogin, setJustNavigatedFromLogin] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const ref = document.referrer || '';
+      const flag = sessionStorage.getItem('auth:justLoggedIn');
+      if (ref.includes('/Onboarding/login') || flag === '1') setJustNavigatedFromLogin(true);
+      // dejar el flag más tiempo para evitar rebotes en redes lentas
+      const t = setTimeout(() => {
+        setJustNavigatedFromLogin(false);
+        try { sessionStorage.removeItem('auth:justLoggedIn'); } catch {}
+      }, 10000);
+      return () => clearTimeout(t);
+    }
+  }, []);
+
   useEffect(() => {
     if (authLoading) return; // aún cargando perfil/token
-    if (!user) {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || sessionStorage.getItem('token')) : null;
+    // Redirigir si definitivamente no hay token
+    if (!token) {
       router.replace("/Onboarding/login?next=/home");
+      return;
     }
-  }, [user, authLoading, router]);
+    // Si venimos del login y aún no hay user, forzar refresh una vez
+    if (justNavigatedFromLogin && !user) {
+      refreshProfile().catch(() => {});
+    }
+    // Si ya resolvimos el usuario, limpiar bandera
+    if (user && justNavigatedFromLogin) {
+      setJustNavigatedFromLogin(false);
+      try { sessionStorage.removeItem('auth:justLoggedIn'); } catch {}
+    }
+    // No redirigir basados en authError inmediatamente; confiar en la presencia del token para dejar cargar.
+  }, [authLoading, user, router, justNavigatedFromLogin, refreshProfile]);
 
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white relative">

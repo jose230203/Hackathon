@@ -26,8 +26,9 @@ export default function CTFView() {
           avatar: d.avatar,
         }));
         setItems(mapped);
-      } catch (e: any) {
-        setError(e?.message || 'Error al cargar desafíos');
+      } catch (e) {
+        const err = e as Error;
+        setError(err.message || 'Error al cargar desafíos');
       } finally {
         setLoading(false);
       }

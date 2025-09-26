@@ -2,7 +2,17 @@ import { api } from "@/shared/utils/api";
 import type { UsuarioProgreso } from "@/domain/entities/UsuarioProgreso";
 
 // Mappers para compatibilidad PascalCase <-/-> camelCase
-function mapUsuarioProgreso(p: any): UsuarioProgreso {
+type RawUsuarioProgreso = Partial<{
+  Id: string; id: string;
+  UsuarioId: string; usuarioId: string;
+  Punto: number; puntos: number;
+  Racha: number; racha: number;
+  Reto: number; retosCompletados: number;
+  Estado: boolean; estado: boolean;
+  FechaInicio: string | Date;
+}>;
+
+function mapUsuarioProgreso(p: RawUsuarioProgreso): UsuarioProgreso {
   return {
     id: p.Id ?? p.id ?? "",
     usuarioId: p.UsuarioId ?? p.usuarioId ?? "",

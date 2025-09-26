@@ -1,6 +1,5 @@
 import React from 'react';
 import './globals.css';
-import LoginPage from './Onboarding/login/page';
 import Landing from './LandingPage/page';
 
 export default function Home() {

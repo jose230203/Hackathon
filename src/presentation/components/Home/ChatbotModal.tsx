@@ -50,8 +50,9 @@ export default function ChatbotModal({ isOpen }: { isOpen: boolean }) {
           setIsStreaming(false);
         }
       });
-    } catch (e: any) {
-      setMessages((m) => [...m, { role: "assistant", content: `Error: ${e?.message || "Fallo al conectar con el asistente."}` }]);
+    } catch (e) {
+      const err = e as Error;
+      setMessages((m) => [...m, { role: "assistant", content: `Error: ${err.message || "Fallo al conectar con el asistente."}` }]);
       setIsStreaming(false);
     }
   }, [input, threadId]);
