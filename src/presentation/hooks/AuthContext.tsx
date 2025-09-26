@@ -42,7 +42,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshProfile = async () => {
     const token = (typeof window !== "undefined") ? (localStorage.getItem("token") || sessionStorage.getItem("token")) : null;
     if (!token) {
+      // Sin token: limpiar estado y finalizar carga para que los guards puedan actuar
+      setAuthToken(null);
       setUser(null);
+      setError(null);
+      setLoading(false);
       return;
     }
     try {
