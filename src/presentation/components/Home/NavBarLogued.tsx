@@ -25,7 +25,7 @@ export default function NavBarLogued() {
         <nav className="flex gap-8">
           <Link href="/home" className="text-gray-300 hover:text-white">Inicio</Link>
           <Link href="/ctf" className="text-gray-300 hover:text-white">CTF</Link>
-          <Link href="/Academy/HomeAcademy" className="text-gray-300 hover:text-white">Academia</Link>
+          <Link href="/retos" className="text-gray-300 hover:text-white">Retos</Link>
           <Link href="/mejora" className="text-green-400 hover:text-white">Mejora</Link>
         </nav>
         <button className="bg-[#241A49] p-2 rounded-full hover:bg-[#6B64F2]">

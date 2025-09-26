@@ -36,7 +36,11 @@ export default function ProgressSection() {
     <div className="bg-[#0B1739] rounded-lg p-6 shadow-lg border border-[#1A0B2E]">
       <h2 className="text-xl font-bold mb-4 text-[#FFFFFF]">Progreso actual</h2>
       {loading && <p className="text-gray-300">Cargando progreso…</p>}
-      {error && <p className="text-red-400">{error}</p>}
+      {error && (
+        <p className="text-red-300 text-sm bg-red-500/10 border border-red-500/20 rounded px-3 py-2">
+          {error}
+        </p>
+      )}
       {!loading && !error && (
         <>
           <div className="flex justify-between items-center mb-2">

@@ -2,8 +2,8 @@ import { api } from "@/shared/utils/api";
 
 export type RegisterPayload = {
   nombre: string;
-  correo: string;
-  contrasena: string;
+  correo: string; // email del usuario
+  contrasena: string; // password del usuario
 };
 
 export type LoginPayload = {
@@ -12,8 +12,31 @@ export type LoginPayload = {
 };
 
 export async function registerUser(payload: RegisterPayload) {
-  const { data } = await api.post("/usuario/create", payload);
-  return data;
+  const body = {
+    nombre: payload.nombre,
+    correo: payload.correo,
+    contrasena: payload.contrasena,
+  };
+  // Permitimos sobreescribir el path por ENV para entornos donde difiere
+  const REGISTER_PATH = process.env.NEXT_PUBLIC_REGISTER_PATH || "/usuario/create";
+  try {
+    const { data } = await api.post(REGISTER_PATH, body);
+    return data;
+  } catch (err: unknown) {
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line no-console
+      console.warn("Registro falló en:", (api.defaults.baseURL || "") + REGISTER_PATH, err);
+    }
+    // Intento de fallback opcional si existe otra ruta en algún entorno
+    try {
+      const { data } = await api.post("/usuario/create", body);
+      return data;
+    } catch (err2: unknown) {
+      const e: any = err2 || err;
+      const serverMsg = e?.response?.data?.message || e?.response?.data?.error || e?.message;
+      throw new Error(serverMsg || "No se pudo registrar el usuario");
+    }
+  }
 }
 
 export async function loginUser(payload: LoginPayload): Promise<{ token?: string } & Record<string, unknown>> {

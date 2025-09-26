@@ -75,7 +75,7 @@ const cursos: Curso[] = [
 const CursosGrid: React.FC = () => (
   <section>
     <h2 className="text-2xl font-bold mb-4 text-white">Los cursos de la academia</h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
       {cursos.map((curso) => (
         <CursoCard
           key={curso.id}

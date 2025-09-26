@@ -31,11 +31,9 @@ export default function LoginForm() {
             localStorage.removeItem("token");
           }
         } catch {}
-        // Configurar interceptor con el token actual
         setAuthToken(res.token);
         // Marcar que acabamos de iniciar sesión para evitar rebote del guard
         try { sessionStorage.setItem('auth:justLoggedIn', '1'); } catch {}
-        // Navegar a home
         router.push('/home');
         return;
       }
@@ -51,14 +49,14 @@ export default function LoginForm() {
     <form onSubmit={onSubmit} className="bg-[#241A49] rounded-lg p-8 shadow-lg w-full max-w-md">
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2" htmlFor="email">
-          Email o Número de teléfono
+          Email
         </label>
         <input
           type="email"
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 rounded bg-[#1A0B2E] text-white border border-[#6B64F2] focus:outline-none focus:ring-2 focus:ring-[#6B64F2]"
+          className="w-full p-2 rounded-xl bg-[#1A0B2E] text-white border border-[#6B64F2] focus:outline-none focus:ring-2 focus:ring-[#6B64F2]"
           placeholder="correo@ejemplo.com"
         />
       </div>
@@ -72,7 +70,7 @@ export default function LoginForm() {
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 rounded bg-[#1A0B2E] text-white border border-[#6B64F2] focus:outline-none focus:ring-2 focus:ring-[#6B64F2]"
+          className="w-full p-2 rounded-xl bg-[#1A0B2E] text-white border border-[#6B64F2] focus:outline-none focus:ring-2 focus:ring-[#6B64F2]"
           placeholder="********"
         />
       </div>

@@ -89,9 +89,9 @@ export default function HomeView() {
   <NavBarLogued />
 
       {/* Contenido principal */}
-      <div className="grid grid-cols-12 gap-4  py-4">
+  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 py-4 px-4 sm:px-6">
         {/* Columna izquierda: Progreso actual y Top de estudiantes */}
-        <div className="col-span-3 space-y-4">
+  <div className="col-span-12 lg:col-span-3 space-y-4">
           {/* Progreso actual */}
           <ProgressSection />
 
@@ -100,9 +100,9 @@ export default function HomeView() {
         </div>
 
         {/* Columna derecha: Cursos activos, Academias y Otros cursos */}
-        <div className="col-span-9 space-y-4">
+  <div className="col-span-12 lg:col-span-9 space-y-4">
           {/* Cursos activos */}
-          <div className="grid grid-cols-3 gap-4 rounded-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 rounded-2xl items-stretch">
             {/* Saludo */}
             <div className="col-span-12  mb-8">
               <h2 className="text-3xl font-bold text-white">
@@ -112,9 +112,9 @@ export default function HomeView() {
             {cursos
               ?.filter((curso) => curso.estado)
               .map((curso) => (
-                <Link href={`/curso/${curso.id}`} key={curso.id} className="bg-gradient-to-r from-[#312E81]/30 to-[#581C87]/40 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition overflow-hidden block">
+                <Link href={`/curso/${curso.id}`} key={curso.id} className="bg-gradient-to-r from-[#312E81]/30 to-[#581C87]/40 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition overflow-hidden h-full flex flex-col min-h-[300px]">
                   <img
-                    src={curso.avatar}
+                    src={curso.avatar || "/Hazagey.jpg"}
                     alt={curso.nombre}
                     className="w-full h-40 object-cover rounded-2xl"
                   />
@@ -139,13 +139,13 @@ export default function HomeView() {
           {academias && <AcademiesSection academias={academias} />}
 
           {/* Otros cursos */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
             {cursos
               ?.filter((curso) => !curso.estado)
               .map((curso) => (
-                <Link href={`/curso/${curso.id}`} key={curso.id} className="bg-[#1A0B2E] rounded-lg shadow-lg cursor-pointer hover:bg-[#2D1B69] transition overflow-hidden block">
+                <Link href={`/curso/${curso.id}`} key={curso.id} className="bg-[#1A0B2E] rounded-lg shadow-lg cursor-pointer hover:bg-[#2D1B69] transition overflow-hidden h-full flex flex-col min-h-[300px]">
                   <img
-                    src={curso.avatar}
+                    src={curso.avatar || "/Hazagey.jpg"}
                     alt={curso.nombre}
                     className="w-full h-40 object-cover"
                   />
