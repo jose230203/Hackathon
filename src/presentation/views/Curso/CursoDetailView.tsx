@@ -14,7 +14,7 @@ const CursoDetailView: React.FC = () => {
   const params = useParams<{ id: string }>();
   const cursoId = params?.id as string;
   const [header, setHeader] = useState<{titulo: string; nivel: string; clases: number; horasContenido: number; horasPractica: number; descripcion: string} | null>(null);
-  type SesionLite = { titulo: string; duracion: string; imgSrc: string };
+  type SesionLite = { id?: string; titulo: string; duracion: string; imgSrc: string };
   const [sesiones, setSesiones] = useState<SesionLite[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +37,7 @@ const CursoDetailView: React.FC = () => {
           horasPractica: 0,
           descripcion: curso.descripcion ?? "",
         });
-        setSesiones(ses.map(s => ({ titulo: s.nombre, duracion: "--", imgSrc: s.avatar || "/Academia.png" })));
+  setSesiones(ses.map(s => ({ id: s.id, titulo: s.nombre, duracion: "--", imgSrc: s.avatar || "/Academia.png" })));
       } catch (e) {
         const err = e as Error;
         setError(err.message || 'Error al cargar curso');
@@ -71,8 +71,8 @@ const CursoDetailView: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {sesiones && (
               <>
-                <CourseClassList clases={sesiones.slice(0, Math.ceil(sesiones.length/2))} />
-                <CourseClassList clases={sesiones.slice(Math.ceil(sesiones.length/2))} />
+                <CourseClassList cursoId={cursoId} clases={sesiones.slice(0, Math.ceil(sesiones.length/2))} />
+                <CourseClassList cursoId={cursoId} clases={sesiones.slice(Math.ceil(sesiones.length/2))} />
               </>
             )}
           </div>

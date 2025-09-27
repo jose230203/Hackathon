@@ -3,6 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { messageGeneral, type AssistantStreamChunk } from "@/infrastructure/api/assistantService";
 import { useAuth } from "@/presentation/hooks/AuthContext";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatbotModal({ isOpen }: { isOpen: boolean }) {
   const { user } = useAuth();
@@ -82,9 +84,11 @@ export default function ChatbotModal({ isOpen }: { isOpen: boolean }) {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 {m.role === "assistant" && <img src="/bot.svg" alt="Bot" className="w-5 h-5 mr-2 mt-1" />}
-                <p className={`text-sm leading-relaxed ${m.role === "user" ? "text-gray-200" : "text-gray-300"}`}>
-                  {m.content}
-                </p>
+                <div className={`max-w-[85%] rounded-md ${m.role === "user" ? "bg-[#1A0B2E]/70" : "bg-[#1A0B2E]/40"} px-3 py-2`}> 
+                  <div className={`text-sm leading-relaxed ${m.role === "user" ? "text-gray-200" : "text-gray-300"}`}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                  </div>
+                </div>
               </div>
             ))}
             <div ref={messagesEndRef} />

@@ -106,3 +106,12 @@ export async function generateContentSesionBySesionId(
 ) {
   return streamAssistant("/Asistente/GenerateContentSesionBySesionId", payload, onChunk);
 }
+
+// Helper conveniente que acumula el markdown completo como string
+export async function generateContentSesionMarkdown(sesionId: string): Promise<string> {
+  let acc = "";
+  await generateContentSesionBySesionId({ sesionId }, (chunk) => {
+    if ("token" in chunk && chunk.token) acc += chunk.token;
+  });
+  return acc;
+}
