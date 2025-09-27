@@ -122,15 +122,16 @@ export default function CursoSesionView() {
                     blockquote: ({ node, ...props }) => (
                       <blockquote className="border-l-4 border-purple-400/60 pl-4 italic text-gray-300" {...props} />
                     ),
-                    code: ({ node, inline, className, children, ...props }) => (
-                      inline ? (
-                        <code className="bg-black/30 px-1.5 py-0.5 rounded text-purple-200" {...props}>{children}</code>
+                    code: ({ node, className, children }) => {
+                      const isInline = !className && !String(children).includes("\n");
+                      return isInline ? (
+                        <code className="bg-black/30 px-1.5 py-0.5 rounded text-purple-200">{children}</code>
                       ) : (
-                        <pre className="bg-black/30 p-3 rounded overflow-x-auto" {...props}>
-                          <code>{children}</code>
+                        <pre className="bg-black/30 p-3 rounded overflow-x-auto">
+                          <code className={className ?? ""}>{children}</code>
                         </pre>
-                      )
-                    ),
+                      );
+                    },
                     hr: () => <hr className="border-t border-white/10 my-6" />,
                   }}
                 >
