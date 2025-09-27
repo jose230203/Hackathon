@@ -47,36 +47,11 @@ export default function TerminalView() {
 
             {/* Terminal */}
             <div className="bg-[#1A0B2E] rounded-lg p-4 shadow-lg h-[360px] border border-[#6B64F2] mt-0 flex flex-col">
-              <div className="flex-1 overflow-y-auto font-mono text-sm whitespace-pre-wrap scrollbar-purple pr-2">
-                {output ? (
-                  <pre className="leading-relaxed">{output}</pre>
-                ) : (
-                  <p className="text-gray-400">Escribe un comando abajo y presiona Enter o Ejecutar…</p>
-                )}
-              </div>
-              {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-              <div className="mt-3 flex items-center">
-                <input
-                  type="text"
-                  value={command}
-                  onChange={(e) => setCommand(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      run();
-                    }
-                  }}
-                  placeholder="Ejemplo: uptime"
-                  className="flex-1 p-2 rounded bg-[#312E81] text-white border border-[#6B64F2] focus:outline-none focus:ring-2 focus:ring-[#6B64F2]"
-                />
-                <button
-                  onClick={run}
-                  disabled={loading}
-                  className="ml-2 bg-gradient-to-l from-[#02CCA3] to-[#6366F1] text-white px-4 py-2 rounded-lg hover:brightness-125 disabled:opacity-60"
-                >
-                  {loading ? "Ejecutando…" : "Ejecutar"}
-                </button>
-              </div>
+              <iframe
+                src={process.env.NEXT_PUBLIC_TERMINAL_URL}
+                className="w-full h-full rounded"
+                sandbox="allow-scripts allow-same-origin allow-forms"
+              />
             </div>
           </div>
 
