@@ -13,7 +13,7 @@ export default function ChatbotModal({ isOpen }: { isOpen: boolean }) {
   const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
   const assistantBufferRef = useRef<string>("");
   const [isStreaming, setIsStreaming] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  // Autoscroll removido por petición
 
   // Limpia posibles restos previos en localStorage una sola vez (no persistimos más)
   useEffect(() => {
@@ -60,10 +60,7 @@ export default function ChatbotModal({ isOpen }: { isOpen: boolean }) {
     }
   }, [input, threadId]);
 
-  // Auto-scroll al final cuando hay nuevos mensajes o streaming
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isStreaming]);
+  // Autoscroll deshabilitado
 
   return (
     <>
@@ -91,7 +88,7 @@ export default function ChatbotModal({ isOpen }: { isOpen: boolean }) {
                 </div>
               </div>
             ))}
-            <div ref={messagesEndRef} />
+            {/* Autoscroll deshabilitado */}
           </div>
 
           {isStreaming && <p className="text-xs text-gray-400 mt-2">El asistente está escribiendo…</p>}

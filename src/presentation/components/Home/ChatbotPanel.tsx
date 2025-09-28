@@ -1,22 +1,27 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { messageGeneral, type AssistantStreamChunk } from "@/infrastructure/api/assistantService";
+import { messageGeneral, messageCurso, messageSesion, messageAcademia, type AssistantStreamChunk } from "@/infrastructure/api/assistantService";
 import { useAuth } from "@/presentation/hooks/AuthContext";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Props = {
   botName?: string;
   className?: string;
+  sesionId?: string;
+  cursoId?: string;
+  academiaId?: string;
 };
 
-export default function ChatbotPanel({ botName = "SuidBot", className = "" }: Props) {
+export default function ChatbotPanel({ botName = "SuidBot", className = "", sesionId, cursoId, academiaId }: Props) {
   const { user } = useAuth();
   const [threadId, setThreadId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
   const assistantBufferRef = useRef<string>("");
   const [isStreaming, setIsStreaming] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  // Autoscroll removido por petición: no usamos ref al final de la lista
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -36,7 +41,19 @@ export default function ChatbotPanel({ botName = "SuidBot", className = "" }: Pr
     assistantBufferRef.current = "";
     setIsStreaming(true);
     try {
-      await messageGeneral({ threadId, message: text }, (chunk: AssistantStreamChunk) => {
+    const sender = sesionId
+    ? (p: { threadId?: string | null; message: string }, cb: (c: AssistantStreamChunk) => void) =>
+      messageSesion({ ...p, sesionId }, cb)
+    : cursoId
+    ? (p: { threadId?: string | null; message: string }, cb: (c: AssistantStreamChunk) => void) =>
+      messageCurso({ ...p, cursoId }, cb)
+    : academiaId
+    ? (p: { threadId?: string | null; message: string }, cb: (c: AssistantStreamChunk) => void) =>
+      messageAcademia({ ...p, academiaId } as { threadId?: string | null; academiaId: string; message: string }, cb)
+    : (p: { threadId?: string | null; message: string }, cb: (c: AssistantStreamChunk) => void) =>
+      messageGeneral(p, cb);
+
+      await sender({ threadId, message: text }, (chunk: AssistantStreamChunk) => {
         if ("token" in chunk) {
           assistantBufferRef.current += chunk.token;
           setMessages((m) => {
@@ -60,11 +77,9 @@ export default function ChatbotPanel({ botName = "SuidBot", className = "" }: Pr
       setMessages((m) => [...m, { role: "assistant", content: `Error: ${err.message || "Fallo al conectar con el asistente."}` }]);
       setIsStreaming(false);
     }
-  }, [input, threadId]);
+  }, [input, threadId, sesionId, cursoId, academiaId]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isStreaming]);
+  // Autoscroll deshabilitado
 
   return (
     <div className={`bg-[#1A142B] rounded-lg p-4 flex flex-col h-[520px] ${className}`}>
@@ -78,13 +93,14 @@ export default function ChatbotPanel({ botName = "SuidBot", className = "" }: Pr
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             {m.role === "assistant" && <img src="/bot.svg" alt="Bot" className="w-5 h-5 mr-2 mt-1" />}
             <div className={`max-w-[85%] rounded-md ${m.role === "user" ? "bg-[#1A0B2E]/70" : "bg-[#1A0B2E]/40"} px-3 py-2`}>
-              <p className={`text-sm leading-relaxed ${m.role === "user" ? "text-gray-200" : "text-gray-300"}`}>
-                {m.content}
-              </p>
+              <div className={`prose prose-invert max-w-none text-sm leading-relaxed ${m.role === "user" ? "text-gray-200" : "text-gray-300"}`}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {m.content}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         ))}
-        <div ref={messagesEndRef} />
       </div>
 
       {isStreaming && <p className="text-xs text-gray-400 mt-2">{botName} está escribiendo…</p>}

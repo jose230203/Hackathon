@@ -5,7 +5,7 @@ import CourseDetailHeader from "../../components/Curso/CourseDetailHeader";
 import CourseClassList from "../../components/Curso/CourseClassList";
 import CourseCertificate from "../../components/Curso/CourseCertificate";
 import CourseActions from "../../components/Curso/CourseActions";
-import ChatCard from "../../components/Academia/ChatCard";
+import ChatbotPanel from "../../components/Home/ChatbotPanel";
 import ProgressCard from "../../components/Academia/ProgressCard";
 import { getCursoByCursoId, getListSesionCursoByCursoId } from "@/infrastructure/api/academyService";
 import { useParams } from "next/navigation";
@@ -86,7 +86,7 @@ const CursoDetailView: React.FC = () => {
             <ProgressCard />
           </div>
           <div className="sticky top-24">
-            <ChatCard />
+            <ChatbotPanel botName="SuidBot" cursoId={cursoId} />
           </div>
         </div>
       </div>

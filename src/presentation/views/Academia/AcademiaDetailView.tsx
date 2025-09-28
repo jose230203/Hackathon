@@ -7,6 +7,7 @@ import { Academia } from "@/domain/entities/Academia";
 import { Curso } from "@/domain/entities/Curso";
 import { getAcademyByAcademiaId, getListCursoByAcademiaId } from "@/infrastructure/api/academyService";
 import Link from "next/link";
+import ChatbotPanel from "@/presentation/components/Home/ChatbotPanel";
 
 export default function AcademiaDetailView({ academiaId }: { academiaId: string }) {
   const [academia, setAcademia] = useState<Academia | null>(null);
@@ -38,7 +39,7 @@ export default function AcademiaDetailView({ academiaId }: { academiaId: string 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-l from-[#2D1B69] via-[#1A0B2E] to-[#0F0B1A] text-white">
       <NavBarLogued />
-      <div className="grid grid-cols-12 gap-4 mx-1">
+  <div className="grid grid-cols-12 gap-4 mx-1">
         <div className="col-span-12">
           {loading && <div className="rounded-xl bg-[#3d2177] p-6 mb-6">Cargando…</div>}
           {error && <div className="rounded-xl bg-red-900/30 border border-red-500/30 p-4 mb-6 text-red-200">{error}</div>}
@@ -55,7 +56,7 @@ export default function AcademiaDetailView({ academiaId }: { academiaId: string 
           )}
         </div>
 
-        <div className="col-span-12">
+        <div className="col-span-8">
           <h2 className="text-2xl font-bold mb-4">Cursos de la academia</h2>
           {cursos.length === 0 && !loading && !error && (
             <p className="text-gray-300">No hay cursos disponibles.</p>
@@ -72,6 +73,11 @@ export default function AcademiaDetailView({ academiaId }: { academiaId: string 
                 <span className="text-white/70 text-sm">{curso.descripcion || "Clase 1 de 21"}</span>
               </Link>
             ))}
+          </div>
+        </div>
+        <div className="col-span-4">
+          <div className="sticky top-24">
+            <ChatbotPanel botName="SuidBot" className="h-[520px]" /* usa MessageAcademia internamente al pasar academiaId */ academiaId={academiaId} />
           </div>
         </div>
       </div>

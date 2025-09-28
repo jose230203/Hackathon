@@ -27,8 +27,11 @@ export async function streamAssistant(
     headers: {
       "Content-Type": "application/json",
       Accept: "text/event-stream",
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
       ...(auth ? { Authorization: auth } : {}),
     },
+    cache: "no-store",
     body: JSON.stringify(body),
   });
 
@@ -57,24 +60,27 @@ export async function streamAssistant(
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
-    // Procesar eventos completos separados por \n\n según SSE
-    let idx;
-    while ((idx = buffer.indexOf("\n\n")) !== -1) {
-      const eventBlock = buffer.slice(0, idx);
-      buffer = buffer.slice(idx + 2);
-      // Extraer todas las líneas data:
-      const dataLines = eventBlock
-        .split("\n")
-        .filter((l) => l.startsWith("data:"))
-        .map((l) => l.replace(/^data:\s?/, ""));
-      if (!dataLines.length) continue;
-      const dataText = dataLines.join("\n");
-      try {
-        const obj = JSON.parse(dataText) as AssistantStreamChunk;
-        onChunk(obj);
-      } catch {
-        // ignorar bloques que no sean JSON
+    // Procesar línea por línea para no depender estrictamente de "\n\n"
+    let newlineIdx: number;
+    while ((newlineIdx = buffer.indexOf("\n")) !== -1) {
+      let line = buffer.slice(0, newlineIdx);
+      buffer = buffer.slice(newlineIdx + 1);
+      // Normalizar CRLF
+      if (line.endsWith("\r")) line = line.slice(0, -1);
+      if (!line) {
+        // delimitador de evento: ignorar (ya procesamos data por línea)
+        continue;
       }
+      if (line.startsWith("data:")) {
+        const payload = line.replace(/^data:\s?/, "");
+        try {
+          const obj = JSON.parse(payload) as AssistantStreamChunk;
+          onChunk(obj);
+        } catch {
+          // Puede no ser JSON (por ejemplo, comentarios, pings), ignorar
+        }
+      }
+      // otras líneas (event:, id:, retry:) no se usan aquí
     }
   }
 }
@@ -98,6 +104,13 @@ export async function messageCurso(
   onChunk: (chunk: AssistantStreamChunk) => void
 ) {
   return streamAssistant("/Asistente/MessageCurso", payload, onChunk);
+}
+
+export async function messageSesion(
+  payload: { threadId?: string | null; sesionId: string; message: string },
+  onChunk: (chunk: AssistantStreamChunk) => void
+) {
+  return streamAssistant("/Asistente/MessageSesion", payload, onChunk);
 }
 
 export async function generateContentSesionBySesionId(

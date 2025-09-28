@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getListSesionCursoByCursoId } from "@/infrastructure/api/academyService";
-import { generateContentSesionMarkdown } from "@/infrastructure/api/assistantService";
+import { generateContentSesionBySesionId, type AssistantStreamChunk } from "@/infrastructure/api/assistantService";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ChatbotPanel from "@/presentation/components/Home/ChatbotPanel";
@@ -15,16 +15,21 @@ function normalizeMarkdown(s: string): string {
   t = t.replace(/\\n/g, "\n");
   // Normalizar CRLF a LF
   t = t.replace(/\r\n/g, "\n");
-  // Separadores a líneas
-  t = t.replace(/\s*---\s*/g, "\n\n");
+  // Convertir <br> en saltos de línea
+  t = t.replace(/<br\s*\/?>(\s*)/gi, "\n");
+  // Convertir <img ...> a sintaxis Markdown ![alt](src)
+  // Primero con alt explícito
+  t = t.replace(/<img[^>]*alt=["']([^"']*)["'][^>]*src=["']([^"']+)["'][^>]*>/gi, "![$1]($2)");
+  t = t.replace(/<img[^>]*src=["']([^"']+)["'][^>]*alt=["']([^"']*)["'][^>]*>/gi, "![$2]($1)");
+  // Luego sin alt
+  t = t.replace(/<img[^>]*src=["']([^"']+)["'][^>]*>/gi, "![]($1)");
   // Asegurar encabezados al inicio de línea
   t = t.replace(/\s+#####\s*/g, "\n\n##### ");
   t = t.replace(/\s+####\s*/g, "\n\n#### ");
   t = t.replace(/\s+###\s*/g, "\n\n### ");
   t = t.replace(/\s+##\s*/g, "\n\n## ");
   t = t.replace(/\s+#\s*/g, "\n\n# ");
-  // Viñetas: forzar salto antes de "- " si no hay
-  t = t.replace(/([^\n])\s+-\s/g, "$1\n- ");
+  // Nota: No tocamos guiones/"---" para no romper tablas GFM
   return t.trim();
 }
 
@@ -40,7 +45,6 @@ export default function CursoSesionView() {
   const [error, setError] = useState<string | null>(null);
   const [sesionesOrden, setSesionesOrden] = useState<string[]>([]);
 
-  // Cargar lista de sesiones para saber anterior/siguiente
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -58,23 +62,35 @@ export default function CursoSesionView() {
     };
   }, [cursoId]);
 
-  // Cargar el contenido markdown de la sesión
+  // Cargar el contenido markdown de la sesión con streaming incremental
   useEffect(() => {
     let mounted = true;
+    let buffer = "";
     (async () => {
       if (!sesionId) return;
       try {
         setLoading(true);
         setError(null);
-  const md = await generateContentSesionMarkdown(sesionId);
-        if (!mounted) return;
-  const normalized = normalizeMarkdown(md || "");
-  setContenido(normalized || "# Sesión\nContenido no disponible");
+        await generateContentSesionBySesionId({ sesionId }, (chunk: AssistantStreamChunk) => {
+          if (!mounted) return;
+          if ("token" in chunk) {
+            buffer += chunk.token || "";
+            const normalizedPartial = normalizeMarkdown(buffer);
+            setContenido(normalizedPartial);
+          } else if ("done" in chunk) {
+            // opcional: podríamos guardar threadId si fuera útil
+            setLoading(false);
+          } else if ("error" in chunk) {
+            setError(chunk.error);
+            setLoading(false);
+          }
+        });
+        if (mounted) setLoading(false);
       } catch (e) {
         const err = e as Error;
         setError(err.message || "No se pudo cargar el contenido de la sesión");
       } finally {
-        setLoading(false);
+        // el estado loading se maneja también al recibir done/error
       }
     })();
     return () => {
@@ -94,10 +110,10 @@ export default function CursoSesionView() {
         {/* Main content */}
         <div className="col-span-12 lg:col-span-9">
           <h1 className="text-3xl font-bold mb-4">Contenido de la sesión</h1>
-          <div className="bg-[#1A142B] rounded-lg p-6 min-h-[400px]">
-            {loading && <p className="text-gray-300">Cargando contenido…</p>}
+          <div className="rounded-lg p-6 min-h-[400px]">
+            {loading && !contenido && <p className="text-gray-300">Cargando contenido…</p>}
             {error && <p className="text-red-400">{error}</p>}
-            {!loading && !error && (
+            {contenido && (
               <article className="max-w-none text-gray-200 leading-7 space-y-4">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
@@ -119,6 +135,28 @@ export default function CursoSesionView() {
                       <ol className="list-decimal pl-6 space-y-1" {...props} />
                     ),
                     li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+                    table: ({ node, ...props }) => (
+                      <div className="w-full overflow-x-auto my-4">
+                        <table className="min-w-full border border-white/10 text-sm" {...props} />
+                      </div>
+                    ),
+                    thead: ({ node, ...props }) => (
+                      <thead className="bg-white/5" {...props} />
+                    ),
+                    tbody: ({ node, ...props }) => <tbody {...props} />,
+                    tr: ({ node, ...props }) => (
+                      <tr className="border-b border-white/10" {...props} />
+                    ),
+                    th: ({ node, ...props }) => (
+                      <th className="px-3 py-2 text-left font-semibold" {...props} />
+                    ),
+                    td: ({ node, ...props }) => (
+                      <td className="px-3 py-2 align-top" {...props} />
+                    ),
+                    img: ({ node, ...props }) => (
+                      // Asegurar que los íconos/imagenes del bot se vean correctamente
+                      <img className="inline-block max-w-full h-auto align-middle rounded" {...props} />
+                    ),
                     blockquote: ({ node, ...props }) => (
                       <blockquote className="border-l-4 border-purple-400/60 pl-4 italic text-gray-300" {...props} />
                     ),
@@ -162,16 +200,8 @@ export default function CursoSesionView() {
 
         {/* Sidebar derecha */}
         <aside className="col-span-12 lg:col-span-3">
-          <div className="bg-[#1A142B] rounded-lg p-4 mb-4">
-            <h2 className="text-lg font-bold mb-2">Progreso actual</h2>
-            <p className="text-sm text-gray-300">Progreso ctf</p>
-            <div className="w-full bg-[#2D1B69] rounded-full h-2">
-              <div className="bg-[#7C3AED] h-2 rounded-full" style={{ width: "80%" }} />
-            </div>
-            <p className="text-xs text-gray-400 mt-1">Siguiente nivel 90%</p>
-          </div>
-
-          <ChatbotPanel botName="SuidBot" />
+          
+          <ChatbotPanel botName="SuidBot" sesionId={sesionId || undefined} />
         </aside>
       </div>
     </section>
