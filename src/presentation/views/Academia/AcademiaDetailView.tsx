@@ -44,7 +44,7 @@ export default function AcademiaDetailView({ academiaId }: { academiaId: string 
           {loading && <div className="rounded-xl bg-[#3d2177] p-6 mb-6">Cargando…</div>}
           {error && <div className="rounded-xl bg-red-900/30 border border-red-500/30 p-4 mb-6 text-red-200">{error}</div>}
           {academia && (
-            <section className="rounded-xl bg-[#3d2177] p-6 mb-6">
+            <section className="rounded-xl bg-[#3d2177] p-6 mb-6 mt-6">
               <div className="flex items-center gap-4">
                 <img src={academia.avatar || "/Hazagey.jpg"} alt={academia.nombre} className="w-16 h-16 object-contain" />
                 <div>

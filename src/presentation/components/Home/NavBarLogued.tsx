@@ -8,6 +8,7 @@ export default function NavBarLogued() {
   const { user } = useAuth();
   const avatar = user?.avatar || '/itachi.png';
   const name = user?.nombre || 'Usuario';
+
   return (
     <header className="flex justify-between items-center pb-4 border-b border-[#54188C] font-['Suez-One'] font-black text-xl">
       {/* Logo de la página */}
@@ -24,7 +25,7 @@ export default function NavBarLogued() {
       {/* Textos de la navbar, botón de notificaciones y foto de perfil */}
       <div className="flex items-center gap-8">
         <nav className="flex gap-8">
-          <Link href="/home" className="text-gray-300 hover:text-white">Inicio 1</Link>
+          <Link href="/home" className="text-gray-300 hover:text-white">Inicio</Link>
           <Link href="/ctf" className="text-gray-300 hover:text-white">CTF</Link>
           <Link href="/retos" className="text-gray-300 hover:text-white">Retos</Link>
           <Link href="/mejora" className="text-green-400 hover:text-white">Mejora</Link>

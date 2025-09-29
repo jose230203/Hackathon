@@ -7,6 +7,7 @@ export default function HeroSection() {
     border: "1px solid #410D49"
   };
 
+
   return (
     <section className="flex flex-col md:flex-row items-center justify-center py-20 px-6">
       {/* Texto */}
@@ -22,7 +23,9 @@ export default function HeroSection() {
           exploras galaxias digitales llenas de desafíos.
         </p>
 
-        <Button variant="primary">
+        <Button variant="primary"
+
+        >
           Empieza ya 🚀
         </Button>
       </div>
@@ -40,4 +43,8 @@ export default function HeroSection() {
       </div>
     </section>
   );
+}
+
+function useAuth(): { user: any; } {
+  throw new Error("Function not implemented.");
 }

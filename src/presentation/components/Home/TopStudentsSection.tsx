@@ -36,8 +36,8 @@ export default function TopStudentsSection() {
   }, []);
 
   return (
-    <div className="bg-[#0B1739] rounded-lg p-6 shadow-lg border border-[#1A0B2E]">
-      <h2 className="text-3xl text-center font-bold mb-6 text-white text-shadow-custom">Top de estudiantes</h2>
+    <div className="bg-[#0B1739] rounded-2xl pt-4 p-4 shadow-lg border border-[#1A0B2E]">
+      <h2 className="text-2xl text-center font-bold mb-3 text-white text-shadow-custom">Top de estudiantes</h2>
       {loading && <p className="text-gray-300 text-center">Cargando top 5…</p>}
       {error && (
         <p className="text-red-300 text-center text-sm bg-red-500/10 border border-red-500/20 rounded px-3 py-2">

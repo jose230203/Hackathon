@@ -53,7 +53,7 @@ export default function AcademiaHomeAcademyView({ academiaId }: { academiaId: st
   }, [academiaId]);
 
   const header = useMemo(() => (
-    <section className="rounded-xl bg-[#3d2177] p-6 mb-6">
+    <section className="rounded-xl bg-[#3d2177] p-6 mb-6 mt-6">
       <div className="flex items-center gap-4">
         <img src={academia?.avatar || "/Hazagey.jpg"} alt={academia?.nombre || "Academia"} className="w-16 h-16 object-contain" />
         <div>
