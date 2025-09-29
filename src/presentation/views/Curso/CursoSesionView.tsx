@@ -109,7 +109,6 @@ export default function CursoSesionView() {
       <div className="mx-auto p-6 grid grid-cols-12 gap-6">
         {/* Main content */}
         <div className="col-span-12 lg:col-span-9">
-          <h1 className="text-3xl font-bold mb-4">Contenido de la sesión</h1>
           <div className="rounded-lg p-6 min-h-[400px]">
             {loading && !contenido && <p className="text-gray-300">Cargando contenido…</p>}
             {error && <p className="text-red-400">{error}</p>}

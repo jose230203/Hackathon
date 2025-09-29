@@ -40,7 +40,7 @@ export async function registerUser(payload: RegisterPayload) {
 }
 
 export async function loginUser(payload: LoginPayload): Promise<{ token?: string } & Record<string, unknown>> {
-  const { data } = await api.post("/Usuario/Login", payload);
+  const { data } = await api.post("/usuario/login", payload);
   // Intentar normalizar token desde diferentes formas
   const token = data?.token || data?.access_token || data?.accessToken || data?.session?.access_token || data?.session?.accessToken;
   return { token, ...data };
