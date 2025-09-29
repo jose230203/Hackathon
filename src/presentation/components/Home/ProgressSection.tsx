@@ -30,18 +30,18 @@ export default function ProgressSection() {
     };
   }, []);
 
-  const porcentaje = Math.min(100, Math.round((retos / 30) * 100)); // heurística
+  const porcentaje = Math.min(100, Math.round((retos / 30) * 100)) || 0; // heurística
 
   return (
-    <div className="bg-[#0B1739] rounded-lg p-6 shadow-lg border border-[#1A0B2E]">
+    <div className="bg-[#0B1739] rounded-2xl p-6 shadow-lg border border-[#1A0B2E]">
       <h2 className="text-xl font-bold mb-4 text-[#FFFFFF]">Progreso actual</h2>
       {loading && <p className="text-gray-300">Cargando progreso…</p>}
-      {error && (
+      {/* {error && (
         <p className="text-red-300 text-sm bg-red-500/10 border border-red-500/20 rounded px-3 py-2">
           {error}
         </p>
-      )}
-      {!loading && !error && (
+      )} */}
+      {!loading && (
         <>
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-bold text-[#FFFFFF]">Progreso CTF</h3>

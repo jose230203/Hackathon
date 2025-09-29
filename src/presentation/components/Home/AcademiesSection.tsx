@@ -10,7 +10,7 @@ export default function AcademiesSection({ academias }: { academias: Academia[] 
         <Link
           key={academia.id}
           href={`/Academy/HomeAcademy/${academia.id}`}
-          className="bg-[#0B1739] rounded-lg shadow-lg p-8 flex items-center justify-between border border-[#1A0B2E] cursor-pointer hover:bg-[#2D1B69] transition"
+          className="bg-[#0B1739] rounded-lg shadow-lg p-2 flex items-center justify-between border border-[#1A0B2E] cursor-pointer hover:bg-[#2D1B69] transition"
           style={{ opacity: Math.max(0.4, 1 - index * 0.1) }}
         >
           <img
@@ -19,7 +19,7 @@ export default function AcademiesSection({ academias }: { academias: Academia[] 
             className="w-20 h-20 object-contain"
           />
           <div className="ml-6">
-            <h3 className="text-2xl font-bold text-white">{academia.nombre}</h3>
+            <h3 className="text-[16px] font-bold text-white">{academia.nombre}</h3>
             <p className="text-lg text-gray-400">Ver cursos</p>
           </div>
         </Link>

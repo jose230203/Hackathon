@@ -8,6 +8,7 @@ export default function NavBarLogued() {
   const { user } = useAuth();
   const avatar = user?.avatar || '/itachi.png';
   const name = user?.nombre || 'Usuario';
+
   return (
     <header className="flex justify-between items-center pb-4 border-b border-[#54188C] font-['Suez-One'] font-black text-xl">
       {/* Logo de la página */}

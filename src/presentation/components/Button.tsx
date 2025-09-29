@@ -15,7 +15,7 @@ export default function Button({
   className,
 }: ButtonProps) {
   const baseStyles =
-    "px-6 py-2 font-['Montserrat'] font-medium transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-[0_0_25px_10px_rgba(168,85,247,1)]";
+    "px-6 py-2 font-['Montserrat'] font-medium transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-[0_0_25px_10px_rgba(168,85,247,1)] cursor-pointer";
 
   const variants = {
     primary:
