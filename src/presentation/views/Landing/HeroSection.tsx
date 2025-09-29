@@ -44,7 +44,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
-function useAuth(): { user: any; } {
-  throw new Error("Function not implemented.");
-}

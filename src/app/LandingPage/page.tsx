@@ -9,17 +9,17 @@ import StartNowSection from '@/presentation/views/Landing/StartNowSection';
 export default function Landing() {
 
 
-  const styleHeader = {
+  const styleHeader: React.CSSProperties = {
     position: "sticky",
     top: 0,
-    zIndex: 10000, 
-  }
+    zIndex: 10000,
+  };
 
 
 
   return (
     <main className="grid grid-cols-12 w-full min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white">
-      <div className="col-span-12 header" style={styleHeader as any}>
+      <div className="col-span-12 header" style={styleHeader}>
         <Navbar />
       </div>      
       <div className="py-20 col-span-12">

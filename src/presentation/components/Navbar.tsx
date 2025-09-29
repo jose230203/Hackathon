@@ -24,7 +24,7 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const styleLine = {
+  const styleLine: React.CSSProperties = {
     position: "absolute",
     width: "98%",
     height: "1px",
@@ -51,6 +51,7 @@ export default function Navbar() {
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
   return (
@@ -122,7 +123,7 @@ export default function Navbar() {
         </svg>
       </button>
         
-      <hr style={styleLine as any} />
+  <hr style={styleLine} />
 
       {/* Menú para Mobile */}
       <div

@@ -112,8 +112,8 @@ export default function HomeView() {
               {cursos
                 ?.filter((curso) => curso.estado)
               .map((curso) => (
-                  <div style={{ marginRight: "12px", marginTop: "12px "}}>
-                    <Link href={`/curso/${curso.id}`} key={curso.id} className="bg-gradient-to-r from-[#312E81]/30 to-[#581C87]/40 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition overflow-hidden h-full flex flex-col min-h-[300px]">
+                  <div key={curso.id} style={{ marginRight: "12px", marginTop: "12px" }}>
+                    <Link href={`/curso/${curso.id}`} className="bg-gradient-to-r from-[#312E81]/30 to-[#581C87]/40 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition overflow-hidden h-full flex flex-col min-h-[300px]">
                       <img
                         src={curso.avatar || "/Hazagey.jpg"}
                         alt={curso.nombre}
