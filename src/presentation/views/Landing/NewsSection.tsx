@@ -11,11 +11,11 @@ export default function NewsSection() {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-20 text-center">
-      <h2 className="font-['suez-one'] text-5xl font-bold text-white mb-4">
+    <section className="max-w-7xl mx-auto px-6 py-20 text-center" style={{ paddingTop: "5rem" }}>
+      <h2 className="font-['arial'] text-5xl font-bold text-white mb-4">
         Noticia Y Novedades
       </h2>
-      <p className="font-['orbitron'] text-lg text-gray-300 mb-20">
+      <p className="font-['arial'] text-lg text-gray-300 mb-20">
         Mantente al dia con lo ultimo de la ciberseguridad, actualizaciones de nuestra plataforma <br />
         y articulos de nuestros expertos
       </p>

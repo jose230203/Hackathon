@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/presentation/components/Button";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,14 +24,43 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const styleLine = {
+    position: "absolute",
+    width: "98%",
+    height: "1px",
+    backgroundColor: "#2A0F47",
+    border: 0,
+    bottom: "-2px",
+    left: "1%",
+  };
+
+  const handleScroll = () => {
+    const top = window.scrollY;
+    const header = document.querySelector('.header');
+    if (!header) return;
+
+    if (top > 40) {
+      header.classList.add('bg-[#0f0b1a4f]');
+    }
+
+    if (top < 40) {
+      header.classList.remove('bg-[#0f0b1a4f]');
+    }
+  };
+  
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+  }, []);
+  
   return (
-    <nav className="bg-[#0F0B1A] text-white p-4 flex items-center justify-between shadow-md">
+    <nav className="text-white p-4 flex items-center justify-between max-w-7xl mx-auto px-6 py-4">
       {/* Logo + Marca */}
       <Link href="/" className="flex items-center gap-2">
         <Image src="/Logo.svg" alt="Academia Suid" width={32} height={32} className="w-8 h-8" />
         <div className="text-xl font-bold">
-          <span>Academia</span>
-          <span className="text-[#6B64F2]">Suid</span>
+          <span>Suid </span>
+          <span className="text-[#6B64F2]">Academy</span>
         </div>
       </Link>
 
@@ -92,8 +121,8 @@ export default function Navbar() {
           )}
         </svg>
       </button>
-
-      
+        
+      <hr style={styleLine as any} />
 
       {/* Menú para Mobile */}
       <div
