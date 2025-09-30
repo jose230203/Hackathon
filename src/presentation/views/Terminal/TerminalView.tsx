@@ -27,7 +27,7 @@ export default function TerminalView() {
   const [verified, setVerified] = useState(false);
 
   const terminalSrc = useMemo(() => {
-    const u = process.env.NEXT_PUBLIC_TERMINAL_URL + ":8080" || "";
+    const u = process.env.NEXT_PUBLIC_TERMINAL_URL + ":8080" || "35.208.27.6:8080";
     if (!u) return "";
     return /^https?:\/\//i.test(u) ? u : `http://${u}`;
   }, []);
