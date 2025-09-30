@@ -26,33 +26,16 @@ export default function TerminalView() {
   const [answers, setAnswers] = useState<Array<{ value: string; correct: boolean; locked: boolean }>>([]);
   const [verified, setVerified] = useState(false);
 
+  // Usar proxy same-origin: /terminal
   const terminalSrc = useMemo(() => {
-    const raw = (process.env.NEXT_PUBLIC_TERMINAL_URL || "").trim();
-    let base = raw;
-    // Si viene vacío, usar fallback
-    if (!base) base = "35.208.27.6";
-    // Si no incluye puerto explícito, por defecto 8080
-    const hasPort = /:\d+$/.test(base);
-    let hostPort = hasPort ? base : `${base}:8080`;
-    // Si ya viene con protocolo, respetarlo; si no, asumir http
-    if (!/^https?:\/\//i.test(hostPort)) hostPort = `http://${hostPort}`;
-    return hostPort;
+    // Si defines NEXT_PUBLIC_TERMINAL_URL, next.config la usará para proxy en /terminal
+    return "/terminal";
   }, []);
 
   const [embedHint, setEmbedHint] = useState<string | null>(null);
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isHttps = window.location.protocol === "https:";
-      const isHttpIframe = /^http:\/\//i.test(terminalSrc);
-      if (isHttps && isHttpIframe) {
-        setEmbedHint(
-          "El sitio está en HTTPS y la terminal usa HTTP. Los navegadores bloquean iframes mixtos. Expón la terminal en HTTPS o usa un túnel/proxy con TLS."
-        );
-      } else {
-        setEmbedHint(null);
-      }
-    }
-  }, [terminalSrc]);
+    setEmbedHint(null);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
