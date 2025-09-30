@@ -124,7 +124,7 @@ export default function ChatbotPanel({ botName = "SuidBot", className = "", sesi
           onClick={send}
           className="ml-2 mb-2 bg-transparent p-1 hover:opacity-90"
         >
-          <img src="/lupa.svg" alt="Enviar" className="w-6 h-6" />
+          <img src="/Lupa.svg" alt="Enviar" className="w-6 h-6" />
         </button>
       </div>
     </div>

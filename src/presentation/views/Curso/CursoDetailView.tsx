@@ -79,7 +79,7 @@ const CursoDetailView: React.FC = () => {
               )}
             </div>
             <div className="flex flex-col md:flex-row gap-8 mt-8">
-              <CourseCertificate />
+              <CourseCertificate cursoId={cursoId} />
               <CourseActions />
             </div>
           </div>
