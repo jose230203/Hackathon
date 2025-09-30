@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { createCertificateByCursoId } from "@/infrastructure/api/certificateService";
+import { CheckCircle2, Download, Loader2 } from "lucide-react";
 
 type Props = { cursoId?: string };
 
@@ -10,6 +11,7 @@ const CourseCertificate: React.FC<Props> = ({ cursoId }) => {
   const [error, setError] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [showDownload, setShowDownload] = useState(false);
 
   const onGenerate = async () => {
     if (!cursoId) return;
@@ -31,6 +33,16 @@ const CourseCertificate: React.FC<Props> = ({ cursoId }) => {
     }
   };
 
+  useEffect(() => {
+    // Activa animación de aparición cuando ya hay URL
+    if (fileUrl) {
+      const t = setTimeout(() => setShowDownload(true), 10);
+      return () => clearTimeout(t);
+    } else {
+      setShowDownload(false);
+    }
+  }, [fileUrl]);
+
   return (
     <div className="flex flex-col items-start gap-2">
       <span className="bg-[#0BFFB7]/10 text-[#0BFFB7] px-4 py-1 rounded-full font-semibold">Certificado digital</span>
@@ -44,23 +56,57 @@ const CourseCertificate: React.FC<Props> = ({ cursoId }) => {
       </div>
 
       {/* Acciones */}
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-3 flex flex-wrap items-center gap-3">
         <button
           disabled={!cursoId || loading}
           onClick={onGenerate}
-          className={`px-4 py-2 rounded-lg text-white ${loading ? "bg-gray-600" : "bg-gradient-to-r from-[#A855F7] to-[#6366F1] hover:opacity-90"}`}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-all
+            ${loading
+              ? "bg-gray-600 cursor-not-allowed"
+              : fileUrl
+                ? "bg-[#1F2937] hover:bg-[#374151] border border-white/10"
+                : "bg-gradient-to-r from-[#A855F7] to-[#6366F1] hover:opacity-95 shadow-lg shadow-[#6366F1]/20"}
+          `}
+          aria-busy={loading || undefined}
         >
-          {loading ? "Generando…" : "Generar certificado"}
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Generando…
+            </>
+          ) : fileUrl ? (
+            <>Regenerar certificado</>
+          ) : (
+            <>Generar certificado</>
+          )}
         </button>
+
         {fileUrl && (
-          <a
-            href={fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 rounded-lg bg-[#0BFFB7]/20 text-[#0BFFB7] hover:bg-[#0BFFB7]/30"
+          <div
+            className={`transition-all duration-300 ${showDownload ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-1 scale-95 pointer-events-none"}`}
           >
-            Ver/Descargar {fileName ? `(${fileName})` : "PDF"}
-          </a>
+            <a
+              href={fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                         bg-emerald-500/15 text-emerald-300 border border-emerald-400/30
+                         hover:bg-emerald-500/25 hover:text-emerald-200
+                         ring-1 ring-emerald-400/20 shadow-md"
+            >
+              <Download className="h-4 w-4" />
+              <span className="font-medium">Ver/Descargar</span>
+              {fileName && (
+                <span className="max-w-[220px] truncate text-emerald-200/80" title={fileName}>
+                  ({fileName})
+                </span>
+              )}
+            </a>
+            <div className="mt-1 flex items-center gap-1 text-emerald-300/80 text-xs">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>Tu certificado está listo</span>
+            </div>
+          </div>
         )}
       </div>
       {error && (
