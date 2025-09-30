@@ -27,10 +27,32 @@ export default function TerminalView() {
   const [verified, setVerified] = useState(false);
 
   const terminalSrc = useMemo(() => {
-    const u = process.env.NEXT_PUBLIC_TERMINAL_URL + ":8080" || "35.208.27.6:8080";
-    if (!u) return "";
-    return /^https?:\/\//i.test(u) ? u : `http://${u}`;
+    const raw = (process.env.NEXT_PUBLIC_TERMINAL_URL || "").trim();
+    let base = raw;
+    // Si viene vacío, usar fallback
+    if (!base) base = "35.208.27.6";
+    // Si no incluye puerto explícito, por defecto 8080
+    const hasPort = /:\d+$/.test(base);
+    let hostPort = hasPort ? base : `${base}:8080`;
+    // Si ya viene con protocolo, respetarlo; si no, asumir http
+    if (!/^https?:\/\//i.test(hostPort)) hostPort = `http://${hostPort}`;
+    return hostPort;
   }, []);
+
+  const [embedHint, setEmbedHint] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isHttps = window.location.protocol === "https:";
+      const isHttpIframe = /^http:\/\//i.test(terminalSrc);
+      if (isHttps && isHttpIframe) {
+        setEmbedHint(
+          "El sitio está en HTTPS y la terminal usa HTTP. Los navegadores bloquean iframes mixtos. Expón la terminal en HTTPS o usa un túnel/proxy con TLS."
+        );
+      } else {
+        setEmbedHint(null);
+      }
+    }
+  }, [terminalSrc]);
 
   useEffect(() => {
     let mounted = true;
@@ -147,6 +169,21 @@ export default function TerminalView() {
                 <div className="pointer-events-none absolute right-0 top-0 h-full w-4 bg-[#1A0B2E]" />
                 <div className="pointer-events-none absolute left-0 bottom-0 w-full h-4 bg-[#1A0B2E]" />
               </div>
+              {embedHint && (
+                <div className="mt-2 flex items-center gap-3">
+                  <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded px-2 py-1">
+                    {embedHint}
+                  </p>
+                  <a
+                    href={terminalSrc}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs px-3 py-1 rounded bg-white/10 hover:bg-white/20 border border-white/20"
+                  >
+                    Abrir terminal en nueva pestaña
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
