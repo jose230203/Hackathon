@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getListSesionCursoByCursoId } from "@/infrastructure/api/academyService";
 import { generateContentSesionBySesionId, type AssistantStreamChunk } from "@/infrastructure/api/assistantService";
 import ReactMarkdown from "react-markdown";
@@ -36,7 +36,6 @@ function normalizeMarkdown(s: string): string {
 export default function CursoSesionView() {
   const params = useParams<{ id: string; sesionId: string }>();
   const router = useRouter();
-  const search = useSearchParams();
   const cursoId = useMemo(() => params?.id as string, [params]);
   const sesionId = useMemo(() => params?.sesionId as string, [params]);
 
@@ -53,8 +52,8 @@ export default function CursoSesionView() {
         const sesiones = await getListSesionCursoByCursoId(cursoId);
         if (!mounted) return;
         setSesionesOrden(sesiones.map((s) => s.id));
-      } catch (e) {
-        // opcional
+      } catch {
+        // silenciar errores no críticos de carga de sesiones
       }
     })();
     return () => {
@@ -117,49 +116,49 @@ export default function CursoSesionView() {
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
-                    h1: ({ node, ...props }) => (
+                    h1: ({ ...props }) => (
                       <h1 className="text-3xl font-bold mt-2 mb-4" {...props} />
                     ),
-                    h2: ({ node, ...props }) => (
+                    h2: ({ ...props }) => (
                       <h2 className="text-2xl font-semibold mt-6 mb-3" {...props} />
                     ),
-                    h3: ({ node, ...props }) => (
+                    h3: ({ ...props }) => (
                       <h3 className="text-xl font-semibold mt-4 mb-2" {...props} />
                     ),
-                    p: ({ node, ...props }) => <p className="mb-3" {...props} />,
-                    ul: ({ node, ...props }) => (
+                    p: ({ ...props }) => <p className="mb-3" {...props} />,
+                    ul: ({ ...props }) => (
                       <ul className="list-disc pl-6 space-y-1" {...props} />
                     ),
-                    ol: ({ node, ...props }) => (
+                    ol: ({ ...props }) => (
                       <ol className="list-decimal pl-6 space-y-1" {...props} />
                     ),
-                    li: ({ node, ...props }) => <li className="mb-1" {...props} />,
-                    table: ({ node, ...props }) => (
+                    li: ({ ...props }) => <li className="mb-1" {...props} />,
+                    table: ({ ...props }) => (
                       <div className="w-full overflow-x-auto my-4">
                         <table className="min-w-full border border-white/10 text-sm" {...props} />
                       </div>
                     ),
-                    thead: ({ node, ...props }) => (
+                    thead: ({ ...props }) => (
                       <thead className="bg-white/5" {...props} />
                     ),
-                    tbody: ({ node, ...props }) => <tbody {...props} />,
-                    tr: ({ node, ...props }) => (
+                    tbody: ({ ...props }) => <tbody {...props} />,
+                    tr: ({ ...props }) => (
                       <tr className="border-b border-white/10" {...props} />
                     ),
-                    th: ({ node, ...props }) => (
+                    th: ({ ...props }) => (
                       <th className="px-3 py-2 text-left font-semibold" {...props} />
                     ),
-                    td: ({ node, ...props }) => (
+                    td: ({ ...props }) => (
                       <td className="px-3 py-2 align-top" {...props} />
                     ),
-                    img: ({ node, ...props }) => (
+                    img: ({ ...props }) => (
                       // Asegurar que los íconos/imagenes del bot se vean correctamente
                       <img className="inline-block max-w-full h-auto align-middle rounded" {...props} />
                     ),
-                    blockquote: ({ node, ...props }) => (
+                    blockquote: ({ ...props }) => (
                       <blockquote className="border-l-4 border-purple-400/60 pl-4 italic text-gray-300" {...props} />
                     ),
-                    code: ({ node, className, children }) => {
+                    code: ({ className, children }) => {
                       const isInline = !className && !String(children).includes("\n");
                       return isInline ? (
                         <code className="bg-black/30 px-1.5 py-0.5 rounded text-purple-200">{children}</code>

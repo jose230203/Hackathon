@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     FechaRegistro: string | Date;
   }>;
 
-  const mapUser = (u: RawUsuario): Usuario => ({
+  const mapUser = useCallback((u: RawUsuario): Usuario => ({
     id: u?.Id ?? u?.id ?? "",
     nombre: u?.Nombre ?? u?.nombre,
     correo: u?.Correo ?? u?.correo,
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     contrasena: undefined,
     estado: (u?.Estado ?? u?.estado) ?? true,
     fechaRegistro: u?.FechaRegistro ? new Date(u.FechaRegistro) : new Date(),
-  });
+  }), []);
 
   const refreshProfile = useCallback(async () => {
     const token = (typeof window !== "undefined") ? (localStorage.getItem("token") || sessionStorage.getItem("token")) : null;

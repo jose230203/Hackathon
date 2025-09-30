@@ -1,4 +1,6 @@
 import { api } from "@/shared/utils/api";
+import type { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 
 export type CertificateResult = {
   success: boolean | null;
@@ -17,26 +19,38 @@ export async function createCertificateByCursoId(cursoId: string): Promise<Certi
   try {
     const { data } = await api.post(url);
     return normalizeCertificateResult(data);
-  } catch (e: any) {
+  } catch (e: unknown) {
     // Adjuntar detalle rico (URL completa, status, body)
     throw buildDetailedAxiosError(e, "POST", url, { cursoId });
   }
 }
 
-function normalizeCertificateResult(raw: any): CertificateResult {
+type BackendCertificateResponse = {
+  success?: boolean;
+  filePath?: string;
+  fileName?: string;
+  error?: string | Record<string, unknown>;
+} | unknown;
+
+function normalizeCertificateResult(raw: BackendCertificateResponse): CertificateResult {
   // Intentar normalizar estructura esperada desde backend
-  const success = raw?.success ?? null;
-  const filePath = raw?.filePath ?? "";
-  const fileName = raw?.fileName ?? "";
-  const error = typeof raw?.error === "string" ? raw.error : undefined;
+  const obj = (raw && typeof raw === "object") ? (raw as Record<string, unknown>) : {};
+  const success = typeof obj["success"] === "boolean" ? (obj["success"] as boolean) : null;
+  const filePath = typeof obj["filePath"] === "string" ? (obj["filePath"] as string) : "";
+  const fileName = typeof obj["fileName"] === "string" ? (obj["fileName"] as string) : "";
+  const errVal = obj["error"];
+  const error = typeof errVal === "string" ? errVal : undefined;
   return { success, filePath, fileName, error };
 }
 
-function buildDetailedAxiosError(e: any, method: string, url: string, ctx?: Record<string, unknown>) {
+type StatusError = Error & { status?: number };
+
+function buildDetailedAxiosError(e: unknown, method: string, url: string, ctx?: Record<string, unknown>) {
   try {
-    const status = e?.response?.status;
-    const statusText = e?.response?.statusText;
-    const data = e?.response?.data;
+    const axiosErr: AxiosError | undefined = isAxiosError(e) ? (e as AxiosError) : undefined;
+    const status = axiosErr?.response?.status;
+    const statusText = axiosErr?.response?.statusText;
+    const data = axiosErr?.response?.data as unknown;
     const base = (api.defaults.baseURL || "").replace(/\/$/, "");
     const fullUrl = `${base}${url.startsWith("/") ? url : `/${url}`}`;
     const bodyText = typeof data === "string" ? data : JSON.stringify(data);
@@ -44,9 +58,9 @@ function buildDetailedAxiosError(e: any, method: string, url: string, ctx?: Reco
     // Extraer mensaje útil si el backend mandó { error: '...' } o { error: {} }
     let backendMsg = "";
     if (data && typeof data === "object") {
-      const err = (data as any).error;
-      if (typeof err === "string" && err.trim()) backendMsg = err;
-      else if (err && typeof err === "object" && Object.keys(err).length > 0) backendMsg = JSON.stringify(err);
+      const errField = (data as Record<string, unknown>)["error"];
+      if (typeof errField === "string" && errField.trim()) backendMsg = errField;
+      else if (errField && typeof errField === "object" && Object.keys(errField as Record<string, unknown>).length > 0) backendMsg = JSON.stringify(errField);
     }
 
     const contextText = ctx ? `\nContexto: ${JSON.stringify(ctx)}` : "";
@@ -55,8 +69,8 @@ function buildDetailedAxiosError(e: any, method: string, url: string, ctx?: Reco
       : "";
 
     const detailedMessage = `${method} ${fullUrl} -> ${status ?? ""} ${statusText ?? ""}\nRespuesta: ${backendMsg || bodyText}${contextText}${hint}`;
-    const err = new Error(detailedMessage);
-    (err as any).status = status;
+    const err: StatusError = new Error(detailedMessage) as StatusError;
+    err.status = status;
     return err;
   } catch {
     return e;

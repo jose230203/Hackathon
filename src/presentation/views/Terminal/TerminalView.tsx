@@ -1,32 +1,8 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React from "react";
 import NavBarLogued from "@/presentation/components/Home/NavBarLogued";
-import { execCommand } from "@/infrastructure/api/consoleService";
 
 export default function TerminalView() {
-  const [command, setCommand] = useState("");
-  const [output, setOutput] = useState<string>("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
-
-  const run = useCallback(async () => {
-    const cmd = command.trim();
-    if (!cmd) return;
-    setLoading(true);
-    setError("");
-    try {
-      const result = await execCommand(cmd);
-      setOutput((prev) => (prev ? prev + "\n" : "") + `$ ${cmd}\n` + result);
-      setCommand("");
-    } catch (e) {
-      const err = e as unknown as { response?: { data?: { error?: string } }; message?: string };
-      const msg = err?.response?.data?.error || err?.message || "Error al ejecutar el comando";
-      setError(msg);
-      setOutput((prev) => (prev ? prev + "\n" : "") + `$ ${cmd}\n` + msg);
-    } finally {
-      setLoading(false);
-    }
-  }, [command]);
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white relative">
       {/* Navbar */}
