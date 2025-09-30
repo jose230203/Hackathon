@@ -26,15 +26,10 @@ export default function TerminalView() {
   const [answers, setAnswers] = useState<Array<{ value: string; correct: boolean; locked: boolean }>>([]);
   const [verified, setVerified] = useState(false);
 
-  // Usar proxy same-origin: /terminal
   const terminalSrc = useMemo(() => {
-    // Si defines NEXT_PUBLIC_TERMINAL_URL, next.config la usará para proxy en /terminal
-    return "/terminal";
-  }, []);
-
-  const [embedHint, setEmbedHint] = useState<string | null>(null);
-  useEffect(() => {
-    setEmbedHint(null);
+    const u = process.env.NEXT_PUBLIC_TERMINAL_URL + ":8080" || "35.208.27.6:8080";
+    if (!u) return "";
+    return /^https?:\/\//i.test(u) ? u : `http://${u}`;
   }, []);
 
   useEffect(() => {
@@ -152,21 +147,6 @@ export default function TerminalView() {
                 <div className="pointer-events-none absolute right-0 top-0 h-full w-4 bg-[#1A0B2E]" />
                 <div className="pointer-events-none absolute left-0 bottom-0 w-full h-4 bg-[#1A0B2E]" />
               </div>
-              {embedHint && (
-                <div className="mt-2 flex items-center gap-3">
-                  <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded px-2 py-1">
-                    {embedHint}
-                  </p>
-                  <a
-                    href={terminalSrc}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs px-3 py-1 rounded bg-white/10 hover:bg-white/20 border border-white/20"
-                  >
-                    Abrir terminal en nueva pestaña
-                  </a>
-                </div>
-              )}
             </div>
           </div>
 
