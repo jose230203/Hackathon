@@ -80,7 +80,6 @@ export default function TerminalView() {
 
   const verificarFlag = (idx: number) => {
     if (!exam || verified) return;
-    const esperadoFlag = exam.Preguntas[idx].Respuesta;
     setAnswers((prev) => {
       const evaluated = prev.map((a, i) => {
         const q = exam.Preguntas[i];
@@ -101,7 +100,7 @@ export default function TerminalView() {
   return (
     <section className="min-h-screen bg-gradient-to-r from-[#0F0B1A] via-[#1A0B2E] to-[#2D1B69] text-white relative">
       {/* Navbar */}
-  <NavBarLogued />
+      <NavBarLogued />
 
       <div className="px-8 py-4">
         <h1 className="text-3xl text-white font-bold mb-2 text-shadow-custom">

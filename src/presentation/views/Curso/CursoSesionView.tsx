@@ -151,9 +151,13 @@ export default function CursoSesionView() {
                     td: ({ ...props }) => (
                       <td className="px-3 py-2 align-top" {...props} />
                     ),
-                    img: ({ ...props }) => (
-                      // Asegurar que los íconos/imagenes del bot se vean correctamente
-                      <img className="inline-block max-w-full h-auto align-middle rounded" {...props} />
+                    img: ({ alt, ...rest }: React.ImgHTMLAttributes<HTMLImageElement> & { node?: unknown }) => (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        alt={typeof alt === "string" ? alt : ""}
+                        className="inline-block max-w-full h-auto align-middle rounded"
+                        {...rest}
+                      />
                     ),
                     blockquote: ({ ...props }) => (
                       <blockquote className="border-l-4 border-purple-400/60 pl-4 italic text-gray-300" {...props} />
